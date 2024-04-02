@@ -4,6 +4,8 @@ import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import OpenAI from "openai";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import IconButton from '@mui/material/IconButton';
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -57,9 +59,9 @@ function App() {
         </Button>
       </Stack>
       <p>{outputText}</p>
-      <Button variant="outlined" onClick={handleCopyToClipboard} disabled={!outputText}>
-        Copy to Clipboard
-      </Button>
+      <IconButton onClick={handleCopyToClipboard} disabled={!outputText}>
+        <ContentCopyIcon />
+      </IconButton>
     </div>
   );
 }
