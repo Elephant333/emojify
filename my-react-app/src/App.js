@@ -3,6 +3,12 @@ import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.REACT_APP_OPENAI_API_KEY,
+  dangerouslyAllowBrowser: true,
+});
 
 function App() {
   const [inputText, setInputText] = useState('');
@@ -12,8 +18,26 @@ function App() {
     setInputText(event.target.value);
   };
 
-  const handleButtonClick = () => {
-    setOutputText(inputText);
+  const handleButtonClick = async () => {
+    if (inputText == "") {
+      return
+    }
+    try {
+      const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [{"role": "system", "content": "You help add emojies appropriately to text messages."},
+        {"role": "user", "content": `Given the following text message, add emojies appropriately throughout the text and don't add anything else: "${inputText}"`}],
+      });
+
+      setOutputText(response.choices[0].message.content);
+    } catch (error) {
+      console.error('Error:', error);
+      setOutputText('Failed to generate emojis');
+    }
+  };
+
+  const handleCopyToClipboard = () => {
+    navigator.clipboard.writeText(outputText);
   };
 
   return (
@@ -33,6 +57,9 @@ function App() {
         </Button>
       </Stack>
       <p>{outputText}</p>
+      <Button variant="outlined" onClick={handleCopyToClipboard} disabled={!outputText}>
+        Copy to Clipboard
+      </Button>
     </div>
   );
 }
