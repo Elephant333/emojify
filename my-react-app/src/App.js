@@ -6,6 +6,8 @@ import Button from '@mui/material/Button';
 import OpenAI from "openai";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import IconButton from '@mui/material/IconButton';
+import Alert from '@mui/material/Alert';
+import CheckIcon from '@mui/icons-material/Check';
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -15,6 +17,7 @@ const openai = new OpenAI({
 function App() {
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const handleInputChange = (event) => {
     setInputText(event.target.value);
@@ -40,6 +43,10 @@ function App() {
 
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(outputText);
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 3000);
   };
 
   return (
@@ -62,6 +69,11 @@ function App() {
       <IconButton onClick={handleCopyToClipboard} disabled={!outputText}>
         <ContentCopyIcon />
       </IconButton>
+      {copied && (
+        <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+          Copied to clipboard!
+        </Alert>
+      )}
     </div>
   );
 }
