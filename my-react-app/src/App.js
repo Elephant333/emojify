@@ -6,8 +6,7 @@ import Button from '@mui/material/Button';
 import OpenAI from "openai";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import IconButton from '@mui/material/IconButton';
-import Alert from '@mui/material/Alert';
-import CheckIcon from '@mui/icons-material/Check';
+import Snackbar from '@mui/material/Snackbar';
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -24,7 +23,7 @@ function App() {
   };
 
   const handleButtonClick = async () => {
-    if (inputText == "") {
+    if (inputText === "") {
       return
     }
     try {
@@ -44,9 +43,14 @@ function App() {
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(outputText);
     setCopied(true);
-    setTimeout(() => {
-      setCopied(false);
-    }, 3000);
+  };
+
+  const handleCloseCopy = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setCopied(false);
   };
 
   return (
@@ -69,11 +73,13 @@ function App() {
       <IconButton onClick={handleCopyToClipboard} disabled={!outputText}>
         <ContentCopyIcon />
       </IconButton>
-      {copied && (
-        <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
-          Copied to clipboard!
-        </Alert>
-      )}
+      <Snackbar
+        open={copied}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        autoHideDuration={3000}
+        onClose={handleCloseCopy}
+        message="Copied to clipboard!"
+      />
     </div>
   );
 }
