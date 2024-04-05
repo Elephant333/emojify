@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -18,11 +18,28 @@ function App() {
   const [outputText, setOutputText] = useState('');
   const [copied, setCopied] = useState(false);
 
+  // can use ctrl + enter to trigger emojify
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && event.key === 'Enter') {
+        console.log("fire");
+        handleButtonClick();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [inputText]);
+
   const handleInputChange = (event) => {
     setInputText(event.target.value);
   };
 
   const handleButtonClick = async () => {
+    console.log(inputText);
     if (inputText === "") {
       return
     }
@@ -30,10 +47,10 @@ function App() {
       const response = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [{"role": "system", "content": "You help add emojies appropriately to text messages."},
-        {"role": "user", "content": `Given the following text message, add emojies appropriately throughout the text and don't add anything else: "${inputText}"`}],
+        {"role": "user", "content": `Given the following text message, add emojies appropriately throughout the text. Don't alter the text itself: "${inputText}"`}],
       });
 
-      setOutputText(response.choices[0].message.content);
+      setOutputText(response.choices[0].message.content.replace(/"/g, ''));
     } catch (error) {
       console.error('Error:', error);
       setOutputText('Failed to generate emojis');
