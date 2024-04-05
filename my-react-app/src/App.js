@@ -7,6 +7,7 @@ import OpenAI from "openai";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/material/Snackbar';
+import logo from './static/emojify_logo.png';
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -15,14 +16,13 @@ const openai = new OpenAI({
 
 function App() {
   const [inputText, setInputText] = useState('');
-  const [outputText, setOutputText] = useState('');
+  const [outputText, setOutputText] = useState([]);
   const [copied, setCopied] = useState(false);
 
   // can use ctrl + enter to trigger emojify
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.ctrlKey && event.key === 'Enter') {
-        console.log("fire");
         handleButtonClick();
       }
     };
@@ -39,26 +39,28 @@ function App() {
   };
 
   const handleButtonClick = async () => {
-    console.log(inputText);
     if (inputText === "") {
       return
     }
     try {
       const response = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
-        messages: [{"role": "system", "content": "You help add emojies appropriately to text messages."},
-        {"role": "user", "content": `Given the following text message, add emojies appropriately throughout the text. Don't alter the text itself: "${inputText}"`}],
+        messages: [{ "role": "system", "content": "You help add emojies appropriately to text messages." },
+        { "role": "user", "content": `Given the following text message, add emojies appropriately throughout the text. Give me a json object of three possible variations with numbers as the json keys: "${inputText}"` }],
       });
 
-      setOutputText(response.choices[0].message.content.replace(/"/g, ''));
+      // output looks like { "1": "what's good gang 👋", "2": "what's good gang 🤙", "3": "what's good gang 💪" }
+      let output = response.choices[0].message.content;
+      output = Object.values(JSON.parse(output));
+      setOutputText(output);
     } catch (error) {
       console.error('Error:', error);
-      setOutputText('Failed to generate emojis');
+      setOutputText([]);
     }
   };
 
-  const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(outputText);
+  const handleCopyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
     setCopied(true);
   };
 
@@ -71,25 +73,37 @@ function App() {
   };
 
   return (
-    <div className="center-container">
-      <Stack spacing={2} direction="row" alignItems="center">
-        <TextField
-          id="outlined-basic"
-          label="Text to emojify"
-          variant="outlined"
-          multiline
-          sx={{ minWidth: 200 }}
-          value={inputText}
-          onChange={handleInputChange}
-        />
-        <Button variant="contained" style={{ minWidth: 'fit-content' }} onClick={handleButtonClick}>
-          Emojify
-        </Button>
-      </Stack>
-      <p>{outputText}</p>
-      <IconButton onClick={handleCopyToClipboard} disabled={!outputText}>
-        <ContentCopyIcon />
-      </IconButton>
+    <div>
+      <img src={logo} alt="Emojify Logo" className='logo' />
+      <div className="input-container">
+        <Stack spacing={2} direction="row" alignItems="center">
+          <TextField
+            id="outlined-basic"
+            label="Text to emojify"
+            variant="outlined"
+            multiline
+            sx={{ minWidth: 200 }}
+            value={inputText}
+            onChange={handleInputChange}
+          />
+          <Button variant="contained" style={{ minWidth: 'fit-content' }} onClick={handleButtonClick}>
+            Emojify
+          </Button>
+        </Stack>
+      </div>
+      {outputText.length > 0 && (
+        <div className="output-container">
+          <p>We think you might like these:</p>
+          {outputText.map((text, index) => (
+            <Stack key={index} spacing={2} direction="row" alignItems="center">
+              <p>{text}</p>
+              <IconButton onClick={() => handleCopyToClipboard(text)}>
+                <ContentCopyIcon />
+              </IconButton>
+            </Stack>
+          ))}
+        </div>
+      )}
       <Snackbar
         open={copied}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
