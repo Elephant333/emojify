@@ -5,10 +5,14 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import OpenAI from "openai";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import MicIcon from '@mui/icons-material/Mic';
 import IconButton from '@mui/material/IconButton';
 import Snackbar from '@mui/material/Snackbar';
 import logo from './static/emojify_logo.png';
 import CircularProgress from '@mui/material/CircularProgress';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
+import Fab from '@mui/material/Fab';
+import Box from '@mui/material/Box';
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -20,6 +24,13 @@ function App() {
   const [outputText, setOutputText] = useState([]);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition
+  } = useSpeechRecognition();
 
   // can use ctrl + enter to trigger emojify
   useEffect(() => {
@@ -77,11 +88,43 @@ function App() {
     setCopied(false);
   };
 
+  const handleMicClick = () => {
+    if (listening) {
+      SpeechRecognition.stopListening();
+      setInputText(transcript);
+      console.log(inputText);
+    } else {
+      resetTranscript();
+      SpeechRecognition.startListening({ continuous: true });
+    }
+  };
+
   return (
     <div>
       <img src={logo} alt="Emojify Logo" className='logo' />
       <div className="input-container">
         <Stack spacing={2} direction="row" alignItems="center">
+          <Box sx={{ m: 1, position: 'relative' }}>
+            <Fab
+              aria-label="listen"
+              color="primary"
+              onClick={handleMicClick}
+              size={'medium'}
+            >
+              <MicIcon />
+            </Fab>
+            {listening && (
+              <CircularProgress
+                size={56}
+                sx={{
+                  position: 'absolute',
+                  top: -4,
+                  left: -4,
+                  zIndex: 1,
+                }}
+              />
+            )}
+          </Box>
           <TextField
             id="outlined-basic"
             label="Text to emojify"
@@ -96,6 +139,9 @@ function App() {
           </Button>
         </Stack>
       </div>
+      {!browserSupportsSpeechRecognition && (
+        <p style={{ fontStyle: 'italic', textAlign: 'center' }}>Please allow access to mic for speech-to-text functionality</p>
+      )}
       {loading && (
         <div className="progress-container">
           <CircularProgress />
