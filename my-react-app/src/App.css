@@ -19,3 +19,10 @@
   width: 500px;
   margin-top: 25vh;
 }
+
+.progress-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
