@@ -16,6 +16,7 @@ import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import SettingsIcon from '@mui/icons-material/Settings';
+import Slider from '@mui/material/Slider';
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -31,12 +32,26 @@ function App() {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
+  const handleSettingsClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+  const handleSettingsClose = () => {
     setAnchorEl(null);
   };
+  const marks = [
+    {
+      value: 0,
+      label: 'Sparse',
+    },
+    {
+      value: 20,
+      label: 'Default',
+    },
+    {
+      value: 40,
+      label: 'Dense',
+    },
+  ];
 
   const {
     transcript,
@@ -118,7 +133,7 @@ function App() {
       <img src={logo} alt="Emojify Logo" className='logo' />
       <div className="input-container">
         <Stack spacing={2} direction="row" alignItems="flex-start">
-          <Box sx={{ m: 1, position: 'relative' }} style={{marginTop: '4px'}}>
+          <Box sx={{ m: 1, position: 'relative' }} style={{ marginTop: '4px' }}>
             <Fab
               aria-label="listen"
               color="primary"
@@ -157,27 +172,35 @@ function App() {
           <Button variant="contained" style={{ minWidth: 'fit-content', marginTop: '9.75px' }} onClick={handleEmojifyClick}>
             Emojify
           </Button>
-          <div style={{marginTop: '8px', marginLeft: '8px'}}>
+          <div style={{ marginTop: '8px', marginLeft: '8px' }}>
             <IconButton
               id="basic-button"
               aria-controls={open ? 'basic-menu' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
-              onClick={handleClick}>
+              onClick={handleSettingsClick}>
               <SettingsIcon />
             </IconButton>
             <Menu
               id="basic-menu"
               anchorEl={anchorEl}
               open={open}
-              onClose={handleClose}
+              onClose={handleSettingsClose}
               MenuListProps={{
                 'aria-labelledby': 'basic-button',
               }}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
-              <MenuItem onClick={handleClose}>Logout</MenuItem>
+              <Box sx={{ width: 200, paddingX: '30px' }}>
+                <Slider
+                  aria-label="Density"
+                  defaultValue={20}
+                  shiftStep={10}
+                  step={10}
+                  marks={marks}
+                  min={0}
+                  max={40}
+                />
+              </Box>
             </Menu>
           </div>
         </Stack>
