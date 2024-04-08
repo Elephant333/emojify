@@ -62,7 +62,7 @@ function App() {
       const response = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [{ "role": "system", "content": "You help add emojies appropriately to text messages." },
-        { "role": "user", "content": `Given the following text message, add emojies appropriately throughout the text. Give me a json object of three possible variations with numbers as the json keys: "${inputText}"` }],
+        { "role": "user", "content": `Given the following text message, add emojies appropriately throughout the text. Give me a json object of three possible variations with numbers as the json keys. Here's the message: "${inputText}"` }],
       });
 
       // output looks like { "1": "what's good gang 👋", "2": "what's good gang 🤙", "3": "what's good gang 💪" }
