@@ -37,6 +37,7 @@ function App() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [density, setDensity] = useState(20);
   const [selectedTone, setSelectedTone] = useState('default');
+  const [tooLong, setTooLong] = useState(false);
 
   const {
     transcript,
@@ -113,11 +114,22 @@ function App() {
     setCopied(false);
   };
 
+  const handleCloseTooLong = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setTooLong(false);
+  };
+
   const handleMicClick = () => {
     if (listening) {
       SpeechRecognition.stopListening();
+      if (transcript.length > 200) {
+        setTooLong(true);
+        return
+      }
       setInputText(transcript);
-      console.log(inputText);
     } else {
       resetTranscript();
       SpeechRecognition.startListening({ continuous: true });
@@ -353,6 +365,13 @@ function App() {
         autoHideDuration={3000}
         onClose={handleCloseCopy}
         message="Copied to clipboard!"
+      />
+      <Snackbar
+        open={tooLong}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        autoHideDuration={4000}
+        onClose={handleCloseTooLong}
+        message="Message too long, try again!"
       />
     </div>
   );
