@@ -65,11 +65,10 @@ function App() {
     10: "Use emojis sparingly.",
     20: "",
     30: "Use emojis generously.",
-    40: "Use an obnoxious amount of emojis.",
+    40: "Use an absurdly large amount of emojis.",
   };
 
   const handleEmojifyClick = async () => {
-    console.log(density);
     if (inputText === "") {
       return;
     }
@@ -139,7 +138,7 @@ function App() {
   const marks = [
     {
       value: 0,
-      label: "Sparse",
+      label: "A Few",
     },
     {
       value: 20,
@@ -147,7 +146,7 @@ function App() {
     },
     {
       value: 40,
-      label: "Dense",
+      label: "A Lot",
     },
   ];
 
@@ -237,10 +236,11 @@ function App() {
                 "aria-labelledby": "basic-button",
               }}
             >
+              <p style={{marginBottom: '5px', marginTop: '0px', marginLeft: '10px'}}>Emoji quantity</p>
               <Box sx={{ width: 200, paddingX: "30px" }}>
                 <Slider
                   aria-label="Density"
-                  defaultValue={density}
+                  value={density}
                   onChange={handleDensityChange}
                   shiftStep={10}
                   step={10}
