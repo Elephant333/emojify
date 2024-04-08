@@ -40,20 +40,8 @@ function App() {
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
 
-  // can use ctrl + enter to trigger emojify
   useEffect(() => {
     setCharCount(inputText.length);
-    const handleKeyDown = (event) => {
-      if (event.ctrlKey && event.key === "Enter") {
-        handleEmojifyClick();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
   }, [inputText]);
 
   const handleInputChange = (event) => {
@@ -196,6 +184,13 @@ function App() {
               sx={{ minWidth: 300 }}
               value={inputText}
               onChange={handleInputChange}
+              // enter to submit, shift+enter to linebreak
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !event.shiftKey) {
+                  event.preventDefault();
+                  handleEmojifyClick();
+                }
+              }}
             />
             {charCount > 0 && (
               <p
@@ -271,16 +266,21 @@ function App() {
         </div>
       )}
       {outputText.length > 0 && !loading && (
-        <div className="output-container">
-          <p>We think you might like these:</p>
-          {outputText.map((text, index) => (
-            <Stack key={index} spacing={2} direction="row" alignItems="center">
-              <p>{text}</p>
-              <IconButton onClick={() => handleCopyToClipboard(text)}>
-                <ContentCopyIcon />
-              </IconButton>
-            </Stack>
-          ))}
+        <div>
+          <div className="output-container">
+            <p>We think you might like these:</p>
+            {outputText.map((text, index) => (
+              <Stack key={index} spacing={2} direction="row" alignItems="center">
+                <p>{text}</p>
+                <IconButton onClick={() => handleCopyToClipboard(text)}>
+                  <ContentCopyIcon />
+                </IconButton>
+              </Stack>
+            ))}
+          </div>
+          <p style={{ fontStyle: "italic", textAlign: "center" }}>
+            Not quite what you were looking for? Try clicking "Emojify" again!
+          </p>
         </div>
       )}
       <Snackbar
