@@ -18,6 +18,7 @@ import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Slider from "@mui/material/Slider";
+import Tooltip from "@mui/material/Tooltip";
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -147,27 +148,39 @@ function App() {
       <img src={logo} alt="Emojify Logo" className="logo" />
       <div className="input-container">
         <Stack spacing={2} direction="row" alignItems="flex-start">
-          <Box sx={{ m: 1, position: "relative" }} style={{ marginTop: "4px" }}>
-            <Fab
-              aria-label="listen"
-              color="primary"
-              onClick={handleMicClick}
-              size={"medium"}
+          <Tooltip
+            title="Listening, click again when done!"
+            arrow
+            open={listening}
+            disableFocusListener
+            disableHoverListener
+            disableTouchListener
+          >
+            <Box
+              sx={{ m: 1, position: "relative" }}
+              style={{ marginTop: "4px" }}
             >
-              <MicIcon />
-            </Fab>
-            {listening && (
-              <CircularProgress
-                size={56}
-                sx={{
-                  position: "absolute",
-                  top: -4,
-                  left: -4,
-                  zIndex: 1,
-                }}
-              />
-            )}
-          </Box>
+              <Fab
+                aria-label="listen"
+                color="primary"
+                onClick={handleMicClick}
+                size={"medium"}
+              >
+                <MicIcon />
+              </Fab>
+              {listening && (
+                <CircularProgress
+                  size={56}
+                  sx={{
+                    position: "absolute",
+                    top: -4,
+                    left: -4,
+                    zIndex: 1,
+                  }}
+                />
+              )}
+            </Box>
+          </Tooltip>
           <div
             style={{
               display: "flex",
@@ -231,7 +244,15 @@ function App() {
                 "aria-labelledby": "basic-button",
               }}
             >
-              <p style={{marginBottom: '5px', marginTop: '0px', marginLeft: '10px'}}>Emoji quantity</p>
+              <p
+                style={{
+                  marginBottom: "5px",
+                  marginTop: "0px",
+                  marginLeft: "10px",
+                }}
+              >
+                Emoji quantity
+              </p>
               <Box sx={{ width: 200, paddingX: "30px" }}>
                 <Slider
                   aria-label="Density"
@@ -270,11 +291,18 @@ function App() {
           <div className="output-container">
             <p>We think you might like these:</p>
             {outputText.map((text, index) => (
-              <Stack key={index} spacing={2} direction="row" alignItems="center">
+              <Stack
+                key={index}
+                spacing={2}
+                direction="row"
+                alignItems="center"
+              >
                 <p>{text}</p>
-                <IconButton onClick={() => handleCopyToClipboard(text)}>
-                  <ContentCopyIcon />
-                </IconButton>
+                <Tooltip title="Copy to Clipboard" placement="right">
+                  <IconButton onClick={() => handleCopyToClipboard(text)}>
+                    <ContentCopyIcon />
+                  </IconButton>
+                </Tooltip>
               </Stack>
             ))}
           </div>
@@ -283,6 +311,7 @@ function App() {
           </p>
         </div>
       )}
+      <p style={{ position: 'fixed', bottom: '10px', textAlign: 'center', width: '100%' }}>By Nathan Li & Edward Kang</p>
       <Snackbar
         open={copied}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
