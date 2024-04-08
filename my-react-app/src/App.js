@@ -1,22 +1,23 @@
-import './App.css';
-import React, { useState, useEffect } from 'react';
-import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
+import "./App.css";
+import React, { useState, useEffect } from "react";
+import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
 import OpenAI from "openai";
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import MicIcon from '@mui/icons-material/Mic';
-import IconButton from '@mui/material/IconButton';
-import Snackbar from '@mui/material/Snackbar';
-import logo from './static/emojify_logo.png';
-import CircularProgress from '@mui/material/CircularProgress';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
-import Fab from '@mui/material/Fab';
-import Box from '@mui/material/Box';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import SettingsIcon from '@mui/icons-material/Settings';
-import Slider from '@mui/material/Slider';
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import MicIcon from "@mui/icons-material/Mic";
+import IconButton from "@mui/material/IconButton";
+import Snackbar from "@mui/material/Snackbar";
+import logo from "./static/emojify_logo.png";
+import CircularProgress from "@mui/material/CircularProgress";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
+import Fab from "@mui/material/Fab";
+import Box from "@mui/material/Box";
+import Menu from "@mui/material/Menu";
+import SettingsIcon from "@mui/icons-material/Settings";
+import Slider from "@mui/material/Slider";
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -24,55 +25,34 @@ const openai = new OpenAI({
 });
 
 function App() {
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState([]);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [charCount, setCharCount] = useState(0);
   const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const open = Boolean(anchorEl);
-  const handleSettingsClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleSettingsClose = () => {
-    setAnchorEl(null);
-  };
-  const marks = [
-    {
-      value: 0,
-      label: 'Sparse',
-    },
-    {
-      value: 20,
-      label: 'Default',
-    },
-    {
-      value: 40,
-      label: 'Dense',
-    },
-  ];
+  const [density, setDensity] = useState(20);
 
   const {
     transcript,
     listening,
     resetTranscript,
-    browserSupportsSpeechRecognition
+    browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
 
   // can use ctrl + enter to trigger emojify
   useEffect(() => {
     setCharCount(inputText.length);
     const handleKeyDown = (event) => {
-      if (event.ctrlKey && event.key === 'Enter') {
+      if (event.ctrlKey && event.key === "Enter") {
         handleEmojifyClick();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [inputText]);
 
@@ -80,16 +60,37 @@ function App() {
     setInputText(event.target.value);
   };
 
+  const densityToPrompt = {
+    0: "Use emojis very sparingly.",
+    10: "Use emojis sparingly.",
+    20: "",
+    30: "Use emojis generously.",
+    40: "Use an obnoxious amount of emojis.",
+  };
+
   const handleEmojifyClick = async () => {
+    console.log(density);
     if (inputText === "") {
-      return
+      return;
     }
     setLoading(true);
     try {
+      const messages = [
+        {
+          role: "system",
+          content: "You help add emojies appropriately to text messages.",
+        },
+        {
+          role: "user",
+          content: `Given the following text message, add emojies appropriately throughout the text. Give me a json object of three possible variations with numbers as the json keys. Don't include any additional markups. Here's the message: "${inputText}"`,
+        },
+      ];
+      if (density !== 20) {
+        messages.push({ role: "user", content: densityToPrompt[density] });
+      }
       const response = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
-        messages: [{ "role": "system", "content": "You help add emojies appropriately to text messages." },
-        { "role": "user", "content": `Given the following text message, add emojies appropriately throughout the text. Give me a json object of three possible variations with numbers as the json keys. Here's the message: "${inputText}"` }],
+        messages: messages,
       });
 
       // output looks like { "1": "what's good gang 👋", "2": "what's good gang 🤙", "3": "what's good gang 💪" }
@@ -98,7 +99,7 @@ function App() {
       output = Object.values(JSON.parse(output));
       setOutputText(output);
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       setOutputText([]);
     }
     setLoading(false);
@@ -110,7 +111,7 @@ function App() {
   };
 
   const handleCloseCopy = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
@@ -128,17 +129,43 @@ function App() {
     }
   };
 
+  const settingsOpen = Boolean(anchorEl);
+  const handleSettingsClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleSettingsClose = () => {
+    setAnchorEl(null);
+  };
+  const marks = [
+    {
+      value: 0,
+      label: "Sparse",
+    },
+    {
+      value: 20,
+      label: "Default",
+    },
+    {
+      value: 40,
+      label: "Dense",
+    },
+  ];
+
+  const handleDensityChange = (event, newValue) => {
+    setDensity(newValue);
+  };
+
   return (
     <div>
-      <img src={logo} alt="Emojify Logo" className='logo' />
+      <img src={logo} alt="Emojify Logo" className="logo" />
       <div className="input-container">
         <Stack spacing={2} direction="row" alignItems="flex-start">
-          <Box sx={{ m: 1, position: 'relative' }} style={{ marginTop: '4px' }}>
+          <Box sx={{ m: 1, position: "relative" }} style={{ marginTop: "4px" }}>
             <Fab
               aria-label="listen"
               color="primary"
               onClick={handleMicClick}
-              size={'medium'}
+              size={"medium"}
             >
               <MicIcon />
             </Fab>
@@ -146,7 +173,7 @@ function App() {
               <CircularProgress
                 size={56}
                 sx={{
-                  position: 'absolute',
+                  position: "absolute",
                   top: -4,
                   left: -4,
                   zIndex: 1,
@@ -154,46 +181,67 @@ function App() {
               />
             )}
           </Box>
-          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              position: "relative",
+            }}
+          >
             <TextField
               id="outlined-basic"
               label="Text to emojify"
               variant="outlined"
               multiline
-              inputProps={{ maxLength: 200 }}
+              inputProps={{ maxLength: 200, style: { maxWidth: "230px" } }}
               sx={{ minWidth: 300 }}
               value={inputText}
               onChange={handleInputChange}
             />
             {charCount > 0 && (
-              <p style={{ position: 'absolute', top: -35, right: 0, fontSize: '14px', color: 'gray' }}>{charCount}/200</p>
+              <p
+                style={{
+                  position: "absolute",
+                  top: -35,
+                  right: 0,
+                  fontSize: "14px",
+                  color: "gray",
+                }}
+              >
+                {charCount}/200
+              </p>
             )}
           </div>
-          <Button variant="contained" style={{ minWidth: 'fit-content', marginTop: '9.75px' }} onClick={handleEmojifyClick}>
-            Emojify
-          </Button>
-          <div style={{ marginTop: '8px', marginLeft: '8px' }}>
+          <div
+            style={{
+              marginTop: "8px",
+              marginLeft: "-45px",
+              marginRight: "5px",
+            }}
+          >
             <IconButton
               id="basic-button"
-              aria-controls={open ? 'basic-menu' : undefined}
+              aria-controls={settingsOpen ? "basic-menu" : undefined}
               aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-              onClick={handleSettingsClick}>
+              aria-expanded={settingsOpen ? "true" : undefined}
+              onClick={handleSettingsClick}
+            >
               <SettingsIcon />
             </IconButton>
             <Menu
               id="basic-menu"
               anchorEl={anchorEl}
-              open={open}
+              open={settingsOpen}
               onClose={handleSettingsClose}
               MenuListProps={{
-                'aria-labelledby': 'basic-button',
+                "aria-labelledby": "basic-button",
               }}
             >
-              <Box sx={{ width: 200, paddingX: '30px' }}>
+              <Box sx={{ width: 200, paddingX: "30px" }}>
                 <Slider
                   aria-label="Density"
-                  defaultValue={20}
+                  defaultValue={density}
+                  onChange={handleDensityChange}
                   shiftStep={10}
                   step={10}
                   marks={marks}
@@ -203,10 +251,19 @@ function App() {
               </Box>
             </Menu>
           </div>
+          <Button
+            variant="contained"
+            style={{ minWidth: "fit-content", marginTop: "9.75px" }}
+            onClick={handleEmojifyClick}
+          >
+            Emojify
+          </Button>
         </Stack>
       </div>
       {!browserSupportsSpeechRecognition && (
-        <p style={{ fontStyle: 'italic', textAlign: 'center' }}>Please allow access to mic for speech-to-text functionality</p>
+        <p style={{ fontStyle: "italic", textAlign: "center" }}>
+          Please allow access to mic for speech-to-text functionality
+        </p>
       )}
       {loading && (
         <div className="progress-container">
@@ -228,7 +285,7 @@ function App() {
       )}
       <Snackbar
         open={copied}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         autoHideDuration={3000}
         onClose={handleCloseCopy}
         message="Copied to clipboard!"
