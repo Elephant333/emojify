@@ -19,6 +19,9 @@ import Menu from "@mui/material/Menu";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Slider from "@mui/material/Slider";
 import Tooltip from "@mui/material/Tooltip";
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -33,6 +36,7 @@ function App() {
   const [charCount, setCharCount] = useState(0);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [density, setDensity] = useState(20);
+  const [selectedTone, setSelectedTone] = useState('default');
 
   const {
     transcript,
@@ -75,6 +79,9 @@ function App() {
       ];
       if (density !== 20) {
         messages.push({ role: "user", content: densityToPrompt[density] });
+      }
+      if (selectedTone !== "default") {
+        messages.push({ role: "user", content: `Try to create a ${selectedTone} tone.` });
       }
       const response = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
@@ -141,6 +148,10 @@ function App() {
 
   const handleDensityChange = (event, newValue) => {
     setDensity(newValue);
+  };
+
+  const handleToneChange = (event) => {
+    setSelectedTone(event.target.value);
   };
 
   return (
@@ -249,11 +260,12 @@ function App() {
                   marginBottom: "5px",
                   marginTop: "0px",
                   marginLeft: "10px",
+                  fontWeight: "bold",
                 }}
               >
-                Emoji quantity
+                Emoji Quantity
               </p>
-              <Box sx={{ width: 200, paddingX: "30px" }}>
+              <Box sx={{ width: 250, paddingX: "30px" }}>
                 <Slider
                   aria-label="Density"
                   value={density}
@@ -265,6 +277,29 @@ function App() {
                   max={40}
                 />
               </Box>
+              <p
+                style={{
+                  marginBottom: "5px",
+                  marginTop: "10px",
+                  marginLeft: "10px",
+                  fontWeight: "bold",
+                }}
+              >
+                Desired Tone
+              </p>
+              <RadioGroup
+                row
+                aria-labelledby="demo-row-radio-buttons-group-label"
+                name="row-radio-buttons-group"
+                value={selectedTone}
+                onChange={handleToneChange}
+                sx={{paddingX: '0px'}}
+              >
+                <FormControlLabel value="default" control={<Radio size='small' />} label="Default" labelPlacement="bottom" />
+                <FormControlLabel value="happy" control={<Radio size='small' />} label="Happy" labelPlacement="bottom" />
+                <FormControlLabel value="sad" control={<Radio size='small' />} label="Sad" labelPlacement="bottom" />
+                <FormControlLabel value="angry" control={<Radio size='small' />} label="Angry" labelPlacement="bottom" />
+              </RadioGroup>
             </Menu>
           </div>
           <Button
