@@ -13,6 +13,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import Fab from '@mui/material/Fab';
 import Box from '@mui/material/Box';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -25,6 +28,15 @@ function App() {
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [charCount, setCharCount] = useState(0);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const {
     transcript,
@@ -38,7 +50,7 @@ function App() {
     setCharCount(inputText.length);
     const handleKeyDown = (event) => {
       if (event.ctrlKey && event.key === 'Enter') {
-        handleButtonClick();
+        handleEmojifyClick();
       }
     };
 
@@ -53,7 +65,7 @@ function App() {
     setInputText(event.target.value);
   };
 
-  const handleButtonClick = async () => {
+  const handleEmojifyClick = async () => {
     if (inputText === "") {
       return
     }
@@ -105,8 +117,8 @@ function App() {
     <div>
       <img src={logo} alt="Emojify Logo" className='logo' />
       <div className="input-container">
-        <Stack spacing={2} direction="row" alignItems="center">
-          <Box sx={{ m: 1, position: 'relative' }}>
+        <Stack spacing={2} direction="row" alignItems="flex-start">
+          <Box sx={{ m: 1, position: 'relative' }} style={{marginTop: '4px'}}>
             <Fab
               aria-label="listen"
               color="primary"
@@ -142,9 +154,32 @@ function App() {
               <p style={{ position: 'absolute', top: -35, right: 0, fontSize: '14px', color: 'gray' }}>{charCount}/200</p>
             )}
           </div>
-          <Button variant="contained" style={{ minWidth: 'fit-content' }} onClick={handleButtonClick}>
+          <Button variant="contained" style={{ minWidth: 'fit-content', marginTop: '9.75px' }} onClick={handleEmojifyClick}>
             Emojify
           </Button>
+          <div style={{marginTop: '8px', marginLeft: '8px'}}>
+            <IconButton
+              id="basic-button"
+              aria-controls={open ? 'basic-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+              onClick={handleClick}>
+              <SettingsIcon />
+            </IconButton>
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                'aria-labelledby': 'basic-button',
+              }}
+            >
+              <MenuItem onClick={handleClose}>Profile</MenuItem>
+              <MenuItem onClick={handleClose}>My account</MenuItem>
+              <MenuItem onClick={handleClose}>Logout</MenuItem>
+            </Menu>
+          </div>
         </Stack>
       </div>
       {!browserSupportsSpeechRecognition && (
