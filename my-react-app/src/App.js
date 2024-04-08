@@ -24,6 +24,7 @@ function App() {
   const [outputText, setOutputText] = useState([]);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [charCount, setCharCount] = useState(0);
 
   const {
     transcript,
@@ -34,6 +35,7 @@ function App() {
 
   // can use ctrl + enter to trigger emojify
   useEffect(() => {
+    setCharCount(inputText.length);
     const handleKeyDown = (event) => {
       if (event.ctrlKey && event.key === 'Enter') {
         handleButtonClick();
@@ -125,15 +127,21 @@ function App() {
               />
             )}
           </Box>
-          <TextField
-            id="outlined-basic"
-            label="Text to emojify"
-            variant="outlined"
-            multiline
-            sx={{ minWidth: 200 }}
-            value={inputText}
-            onChange={handleInputChange}
-          />
+          <div style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
+            <TextField
+              id="outlined-basic"
+              label="Text to emojify"
+              variant="outlined"
+              multiline
+              inputProps={{ maxLength: 200 }}
+              sx={{ minWidth: 300 }}
+              value={inputText}
+              onChange={handleInputChange}
+            />
+            {charCount > 0 && (
+              <p style={{ position: 'absolute', top: -35, right: 0, fontSize: '14px', color: 'gray' }}>{charCount}/200</p>
+            )}
+          </div>
           <Button variant="contained" style={{ minWidth: 'fit-content' }} onClick={handleButtonClick}>
             Emojify
           </Button>
