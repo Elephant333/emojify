@@ -30,6 +30,7 @@ const openai = new OpenAI({
 
 function App() {
   const [inputText, setInputText] = useState("");
+  const [customTone, setCustomTone] = useState("");
   const [outputText, setOutputText] = useState([]);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -141,6 +142,9 @@ function App() {
     setAnchorEl(event.currentTarget);
   };
   const handleSettingsClose = () => {
+    if (selectedTone === "") {
+      setSelectedTone("default");
+    }
     setAnchorEl(null);
   };
   const marks = [
@@ -163,7 +167,13 @@ function App() {
   };
 
   const handleToneChange = (event) => {
+    setCustomTone("");
     setSelectedTone(event.target.value);
+  };
+
+  const handleCustomToneChange = (event) => {
+    setSelectedTone(event.target.value);
+    setCustomTone(event.target.value);
   };
 
   return (
@@ -305,12 +315,21 @@ function App() {
                 name="row-radio-buttons-group"
                 value={selectedTone}
                 onChange={handleToneChange}
-                sx={{paddingX: '0px'}}
+                sx={{width: 310}}
               >
                 <FormControlLabel value="default" control={<Radio size='small' />} label="Default" labelPlacement="bottom" />
                 <FormControlLabel value="happy" control={<Radio size='small' />} label="Happy" labelPlacement="bottom" />
                 <FormControlLabel value="sad" control={<Radio size='small' />} label="Sad" labelPlacement="bottom" />
                 <FormControlLabel value="angry" control={<Radio size='small' />} label="Angry" labelPlacement="bottom" />
+                <TextField
+                  id="standard-basic"
+                  label="Other"
+                  variant="standard"
+                  inputProps={{ maxLength: 20, style: { maxWidth: "230px" } }}
+                  sx={{ width: 175, marginTop: '5px', marginLeft: '20px' }}
+                  value={customTone}
+                  onChange={handleCustomToneChange}
+                />
               </RadioGroup>
             </Menu>
           </div>
