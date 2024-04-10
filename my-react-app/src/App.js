@@ -22,6 +22,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -39,6 +40,7 @@ function App() {
   const [density, setDensity] = useState(20);
   const [selectedTone, setSelectedTone] = useState("default");
   const [tooLong, setTooLong] = useState(false);
+  const [explanations, setExplanations] = useState(["", "", ""]);
   // const [feedbackInputForm, setFeedbackInputForm] = useState("");
   // const [userFeedback, setUserFeedback] = useState("");
 
@@ -79,6 +81,7 @@ function App() {
       return;
     }
     setLoading(true);
+    setExplanations(["", "", ""]);
     try {
       const messages = [
         // {
@@ -110,7 +113,6 @@ function App() {
 
       // output looks like { "1": "what's good gang 👋", "2": "what's good gang 🤙", "3": "what's good gang 💪" }
       let output = response.choices[0].message.content;
-      console.log(output);
       output = Object.values(JSON.parse(output));
       setOutputText(output);
     } catch (error) {
@@ -192,6 +194,38 @@ function App() {
   const handleCustomToneChange = (event) => {
     setSelectedTone(event.target.value);
     setCustomTone(event.target.value);
+  };
+
+  const handleOutputExplanation = async (text, index) => {
+    let updatedExplanations = [...explanations];
+    updatedExplanations[index] = "loading";
+    setExplanations(updatedExplanations);
+    try {
+      const messages = [
+        {
+          role: "system",
+          content: "You interpret messages and their emojis for the user.",
+        },
+        {
+          role: "user",
+          content: `Given the following text message, give a very short (couple sentences) analysis of the message's tone/meaning and how the emojis contribute to that: "${text}"`,
+        },
+      ];
+      const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: messages,
+      });
+
+      let output = response.choices[0].message.content;
+      let updatedExplanations = [...explanations];
+      updatedExplanations[index] = output;
+      setExplanations(updatedExplanations);
+    } catch (error) {
+      console.error("Error:", error);
+      let updatedExplanations = [...explanations];
+      updatedExplanations[index] = "Ack! Something goofed, try clicking again";
+      setExplanations(updatedExplanations);
+    }
   };
 
   return (
@@ -409,6 +443,31 @@ function App() {
                   margin: "0 auto",
                 }}
               >
+                <div style={{ display: "inline-block" }}>
+                  <Tooltip
+                    title={
+                      explanations[index] === "" ? (
+                        "Click for an explanation!"
+                      ) : explanations[index] === "loading" ? (
+                        <CircularProgress
+                          style={{ color: "white" }}
+                          size={20}
+                        />
+                      ) : (
+                        explanations[index]
+                      )
+                    }
+                    // title={<CircularProgress style={{ color: 'white' }} size={20} />}
+                    placement="left"
+                    arrow
+                  >
+                    <IconButton
+                      onClick={() => handleOutputExplanation(text, index)}
+                    >
+                      <HelpOutlineIcon />
+                    </IconButton>
+                  </Tooltip>
+                </div>
                 <p style={{ wordWrap: "break-word", flex: "1" }}>{text}</p>
                 <div style={{ display: "inline-block" }}>
                   <Tooltip title="Copy to Clipboard" placement="right">
