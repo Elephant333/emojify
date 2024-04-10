@@ -30,7 +30,6 @@ const openai = new OpenAI({
 
 function App() {
   const [inputText, setInputText] = useState("");
-  const [feedbackInputForm, setFeedbackInputForm] = useState("");
   const [customTone, setCustomTone] = useState("");
   const [outputText, setOutputText] = useState([]);
   const [copied, setCopied] = useState(false);
@@ -40,7 +39,8 @@ function App() {
   const [density, setDensity] = useState(20);
   const [selectedTone, setSelectedTone] = useState("default");
   const [tooLong, setTooLong] = useState(false);
-  const [userFeedback, setUserFeedback] = useState("");
+  // const [feedbackInputForm, setFeedbackInputForm] = useState("");
+  // const [userFeedback, setUserFeedback] = useState("");
 
   const {
     transcript,
@@ -57,9 +57,9 @@ function App() {
     setInputText(event.target.value);
   };
 
-  const handleFeedbackInputChange = (event) => {
-    setFeedbackInputForm(event.target.value);
-  };
+  // const handleFeedbackInputChange = (event) => {
+  //   setFeedbackInputForm(event.target.value);
+  // };
 
   const densityToPrompt = {
     0: "Use emojis very sparingly.",
@@ -69,10 +69,10 @@ function App() {
     40: "Use an absurdly large amount of emojis.",
   };
 
-  const handleFeedbackClick = async () => {
-    setUserFeedback(feedbackInputForm);
-    console.log("user feedback is now ", userFeedback);
-  };
+  // const handleFeedbackClick = async () => {
+  //   setUserFeedback(feedbackInputForm);
+  //   console.log("user feedback is now ", userFeedback);
+  // };
 
   const handleEmojifyClick = async () => {
     if (inputText === "") {
@@ -81,10 +81,10 @@ function App() {
     setLoading(true);
     try {
       const messages = [
-        {
-          role: "system",
-          content: userFeedback
-        },
+        // {
+        //   role: "system",
+        //   content: userFeedback
+        // },
         {
           role: "system",
           content: "You help add emojies appropriately to text messages.",
@@ -423,7 +423,7 @@ function App() {
           <p style={{ fontStyle: "italic", textAlign: "center" }}>
             Not quite what you were looking for? Try clicking "Emojify" again!
           </p>
-          <TextField
+          {/* <TextField
             style={{
               display: "flex",
               justifyContent: "center",
@@ -445,7 +445,7 @@ function App() {
                 handleFeedbackClick();
               }
             }}
-          />
+          /> */}
         </div>
       )}
       <p
