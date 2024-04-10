@@ -19,9 +19,9 @@ import Menu from "@mui/material/Menu";
 import SettingsIcon from "@mui/icons-material/Settings";
 import Slider from "@mui/material/Slider";
 import Tooltip from "@mui/material/Tooltip";
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -37,7 +37,7 @@ function App() {
   const [charCount, setCharCount] = useState(0);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [density, setDensity] = useState(20);
-  const [selectedTone, setSelectedTone] = useState('default');
+  const [selectedTone, setSelectedTone] = useState("default");
   const [tooLong, setTooLong] = useState(false);
 
   const {
@@ -83,7 +83,10 @@ function App() {
         messages.push({ role: "user", content: densityToPrompt[density] });
       }
       if (selectedTone !== "default") {
-        messages.push({ role: "user", content: `Try to create a ${selectedTone} tone.` });
+        messages.push({
+          role: "user",
+          content: `Try to create a ${selectedTone} tone.`,
+        });
       }
       const response = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
@@ -97,7 +100,7 @@ function App() {
       setOutputText(output);
     } catch (error) {
       console.error("Error:", error);
-      setOutputText([]);
+      setOutputText([-1]);
     }
     setLoading(false);
   };
@@ -128,7 +131,7 @@ function App() {
       SpeechRecognition.stopListening();
       if (transcript.length > 200) {
         setTooLong(true);
-        return
+        return;
       }
       setInputText(transcript);
     } else {
@@ -315,18 +318,38 @@ function App() {
                 name="row-radio-buttons-group"
                 value={selectedTone}
                 onChange={handleToneChange}
-                sx={{width: 310}}
+                sx={{ width: 310 }}
               >
-                <FormControlLabel value="default" control={<Radio size='small' />} label="Default" labelPlacement="bottom" />
-                <FormControlLabel value="happy" control={<Radio size='small' />} label="Happy" labelPlacement="bottom" />
-                <FormControlLabel value="sad" control={<Radio size='small' />} label="Sad" labelPlacement="bottom" />
-                <FormControlLabel value="angry" control={<Radio size='small' />} label="Angry" labelPlacement="bottom" />
+                <FormControlLabel
+                  value="default"
+                  control={<Radio size="small" />}
+                  label="Default"
+                  labelPlacement="bottom"
+                />
+                <FormControlLabel
+                  value="happy"
+                  control={<Radio size="small" />}
+                  label="Happy"
+                  labelPlacement="bottom"
+                />
+                <FormControlLabel
+                  value="sad"
+                  control={<Radio size="small" />}
+                  label="Sad"
+                  labelPlacement="bottom"
+                />
+                <FormControlLabel
+                  value="angry"
+                  control={<Radio size="small" />}
+                  label="Angry"
+                  labelPlacement="bottom"
+                />
                 <TextField
                   id="standard-basic"
                   label="Other"
                   variant="standard"
                   inputProps={{ maxLength: 20, style: { maxWidth: "230px" } }}
-                  sx={{ width: 175, marginTop: '5px', marginLeft: '20px' }}
+                  sx={{ width: 175, marginTop: "5px", marginLeft: "20px" }}
                   value={customTone}
                   onChange={handleCustomToneChange}
                 />
@@ -352,24 +375,34 @@ function App() {
           <CircularProgress />
         </div>
       )}
-      {outputText.length > 0 && !loading && (
+      {outputText[0] === -1 && !loading && (
+        <p style={{ fontStyle: "italic", textAlign: "center" }}>
+          Ack! Something went wrong. Try emojifying again!
+        </p>
+      )}
+      {outputText.length > 0 && outputText[0] !== -1 && !loading && (
         <div>
           <div className="output-container">
             <p>We think you might like these:</p>
             {outputText.map((text, index) => (
-              <Stack
+              <div
                 key={index}
-                spacing={2}
-                direction="row"
-                alignItems="center"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  maxWidth: "900px",
+                  margin: "0 auto",
+                }}
               >
-                <p>{text}</p>
-                <Tooltip title="Copy to Clipboard" placement="right">
-                  <IconButton onClick={() => handleCopyToClipboard(text)}>
-                    <ContentCopyIcon />
-                  </IconButton>
-                </Tooltip>
-              </Stack>
+                <p style={{ wordWrap: "break-word", flex: "1" }}>{text}</p>
+                <div style={{ display: "inline-block" }}>
+                  <Tooltip title="Copy to Clipboard" placement="right">
+                    <IconButton onClick={() => handleCopyToClipboard(text)}>
+                      <ContentCopyIcon />
+                    </IconButton>
+                  </Tooltip>
+                </div>
+              </div>
             ))}
           </div>
           <p style={{ fontStyle: "italic", textAlign: "center" }}>
@@ -377,7 +410,16 @@ function App() {
           </p>
         </div>
       )}
-      <p style={{ position: 'fixed', bottom: '10px', textAlign: 'center', width: '100%' }}>By Nathan Li & Edward Kang</p>
+      <p
+        style={{
+          position: "fixed",
+          bottom: "10px",
+          textAlign: "center",
+          width: "100%",
+        }}
+      >
+        By Nathan Li & Edward Kang
+      </p>
       <Snackbar
         open={copied}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
