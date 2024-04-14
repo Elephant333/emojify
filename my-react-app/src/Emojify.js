@@ -457,7 +457,6 @@ function Emojify() {
                         explanations[index]
                       )
                     }
-                    // title={<CircularProgress style={{ color: 'white' }} size={20} />}
                     placement="left"
                     arrow
                   >
