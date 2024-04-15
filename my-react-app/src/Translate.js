@@ -29,7 +29,7 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-function Emojify() {
+function Translate() {
   const [inputText, setInputText] = useState("");
   const [customTone, setCustomTone] = useState("");
   const [outputText, setOutputText] = useState([]);
@@ -63,14 +63,6 @@ function Emojify() {
   //   setFeedbackInputForm(event.target.value);
   // };
 
-  const densityToPrompt = {
-    0: "Use emojis very sparingly.",
-    10: "Use emojis sparingly.",
-    20: "",
-    30: "Use emojis generously.",
-    40: "Use an absurdly large amount of emojis.",
-  };
-
   // const handleFeedbackClick = async () => {
   //   setUserFeedback(feedbackInputForm);
   //   console.log("user feedback is now ", userFeedback);
@@ -90,16 +82,13 @@ function Emojify() {
         // },
         {
           role: "system",
-          content: "You help add emojies appropriately to text messages.",
+          content: "You translate messages into pure emojis for the user.",
         },
         {
           role: "user",
-          content: `Given the following text message, add emojies appropriately throughout the text. Give me a json object of three possible variations with numbers as the json keys. Don't include any additional markups. Here's the message: "${inputText}"`,
+          content: `Given the following text, do the following. Replace all characters with emojis correspond to the message's semantic meaning (there must only be emojis and spaces, no alphanumeric characters). Give me a json object of three possible variations with numbers as the json keys (remember the keys should also be double quoted). Don't include any additional markups. Here's the message: "${inputText}"`,
         },
       ];
-      if (density !== 20) {
-        messages.push({ role: "user", content: densityToPrompt[density] });
-      }
       if (selectedTone !== "default") {
         messages.push({
           role: "user",
@@ -113,7 +102,7 @@ function Emojify() {
 
       // output looks like { "1": "what's good gang 👋", "2": "what's good gang 🤙", "3": "what's good gang 💪" }
       let output = response.choices[0].message.content;
-      console.log("EMOJIFY output is" + output);
+      console.log("TRANSLATE output is " + output);
       output = Object.values(JSON.parse(output));
       setOutputText(output);
     } catch (error) {
@@ -168,20 +157,6 @@ function Emojify() {
     }
     setAnchorEl(null);
   };
-  const marks = [
-    {
-      value: 0,
-      label: "A Few",
-    },
-    {
-      value: 20,
-      label: "Default",
-    },
-    {
-      value: 40,
-      label: "A Lot",
-    },
-  ];
 
   const handleDensityChange = (event, newValue) => {
     setDensity(newValue);
@@ -205,11 +180,12 @@ function Emojify() {
       const messages = [
         {
           role: "system",
-          content: "You interpret messages and their emojis for the user.",
+          content:
+            "You translate messages into pure emojis or vice versa for the user.",
         },
         {
           role: "user",
-          content: `Given the following text message, give a very short (couple sentences) analysis of the message's tone/meaning and how the emojis contribute to that: "${text}"`,
+          content: `Given the following text, do the following. If it is text, replace all characters with emojis that match it. If it is emojis, convert the emojis into a text message that corresponds to it with the same number of characters as the original message. Here is the input: "${text}"`,
         },
       ];
       const response = await openai.chat.completions.create({
@@ -333,28 +309,6 @@ function Emojify() {
               <p
                 style={{
                   marginBottom: "5px",
-                  marginTop: "0px",
-                  marginLeft: "10px",
-                  fontWeight: "bold",
-                }}
-              >
-                Emoji Quantity
-              </p>
-              <Box sx={{ width: 250, paddingX: "30px" }}>
-                <Slider
-                  aria-label="Density"
-                  value={density}
-                  onChange={handleDensityChange}
-                  shiftStep={10}
-                  step={10}
-                  marks={marks}
-                  min={0}
-                  max={40}
-                />
-              </Box>
-              <p
-                style={{
-                  marginBottom: "5px",
                   marginTop: "10px",
                   marginLeft: "10px",
                   fontWeight: "bold",
@@ -411,7 +365,7 @@ function Emojify() {
             style={{ minWidth: "fit-content", marginTop: "9.75px" }}
             onClick={handleEmojifyClick}
           >
-            Emojify
+            Translate
           </Button>
         </Stack>
       </div>
@@ -525,4 +479,4 @@ function Emojify() {
   );
 }
 
-export default Emojify;
+export default Translate;
