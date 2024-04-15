@@ -8,7 +8,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Translate from "./Translate";
 function App() {
-  const [tab, setTab] = React.useState(1);
+  const [tab, setTab] = React.useState(0);
 
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
@@ -18,17 +18,17 @@ function App() {
     <div>
       <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
         <Tabs value={tab} onChange={handleTabChange} centered>
-          <Tab label="Emoji Search" />
           <Tab label="Emojify" />
+          <Tab label="Emoji Search" />
           <Tab label="Emoji Analyzer" />
-          <Tab label="Translate" />
+          <Tab label="Emoji Translate" />
         </Tabs>
       </Box>
       {tab === 0 && (
-        <EmojiSearch />
+        <Emojify />
       )}
       {tab === 1 && (
-        <Emojify />
+        <EmojiSearch />
       )}
       {tab === 2 && (
         <EmojiAnalysis />
