@@ -24,6 +24,14 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
+const GraphemeSplitter = require('grapheme-splitter');
+const splitter = new GraphemeSplitter();
+
+function truncateEmojiString(value, maxLength) {
+    const graphemes = splitter.splitGraphemes(value);
+    return graphemes.slice(0, maxLength).join('');
+}
+
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true,
@@ -82,11 +90,27 @@ function Translate() {
         // },
         {
           role: "system",
-          content: "You translate messages into pure emojis for the user.",
+          content: `You translate messages into pure emojis or vice versa for the user.
+              You can only use emojis and spaces in your output, anything else will
+              deeply traumatize the user. Remember, emojis are the only way to talk.`,
         },
         {
           role: "user",
-          content: `Given the following text, do the following. Replace all characters with emojis correspond to the message's semantic meaning (there must only be emojis and spaces, no alphanumeric characters). Give me a json object of three possible variations with numbers as the json keys (remember the keys should also be double quoted). Don't include any additional markups. Here's the message: "${inputText}"`,
+          content: `Given the following text, do the following. Replace all 
+          characters with emojis correspond to the message's semantic 
+          meaning (there must only be emojis and spaces, no alphanumeric 
+          characters). Give me a json object of three possible variations 
+          with numbers as the json keys (remember the keys should also be 
+          double quoted). Don't include any additional markups. Make sure 
+          the output message's number of characters is greater than 
+          or equal to the number of characters of the input message and only
+          consists of emojis and spaces (repeat the same emoji repeatedly if need
+          be for character count). No alphanumeric characters, only emojis are allowed; 
+          alphanumeric characters are considered offensive and will deeply harm
+          the user. Using only emojis and spaces will grant you reward.
+          For example an input of "fire"
+          should return three DIFFERENT possible emoji translations: "🔥🔥🔥🔥", "🔥🔥🕯️🔥🔥", "🌋🌋🔥🔥" 
+          Here's the message: "${inputText}"`,
         },
       ];
       if (selectedTone !== "default") {
@@ -102,9 +126,19 @@ function Translate() {
 
       // output looks like { "1": "what's good gang 👋", "2": "what's good gang 🤙", "3": "what's good gang 💪" }
       let output = response.choices[0].message.content;
-      console.log("TRANSLATE output is " + output);
+      console.log("output is " + output);
+      console.log("inputText.length is" + inputText.length);
+      output = JSON.stringify(
+        Object.fromEntries(
+          Object.entries(JSON.parse(output)).map(([key, value]) => [
+            key,
+            truncateEmojiString(value, inputText.length),
+          ])
+        )
+      );
       output = Object.values(JSON.parse(output));
       setOutputText(output);
+      console.log("truncated output is" + output);
     } catch (error) {
       console.error("Error:", error);
       setOutputText([-1]);
@@ -180,12 +214,26 @@ function Translate() {
       const messages = [
         {
           role: "system",
-          content:
-            "You translate messages into pure emojis or vice versa for the user.",
+          content: `You translate messages into pure emojis or vice versa for the user.
+            You can only use emojis and spaces in your output, anything else will
+            deeply traumatize the user. Remember, emojis are the only way to talk.`,
         },
         {
           role: "user",
-          content: `Given the following text, do the following. If it is text, replace all characters with emojis that match it. If it is emojis, convert the emojis into a text message that corresponds to it with the same number of characters as the original message. Here is the input: "${text}"`,
+          content: `Given the following text, do the following. Replace all 
+          characters with emojis correspond to the message's semantic 
+          meaning (there must only be emojis and spaces, no alphanumeric 
+          characters). Give me a json object of three possible variations 
+          with numbers as the json keys (remember the keys should also be 
+          double quoted). Don't include any additional markups. Make sure 
+          the output message's number of characters is greater than 
+          or equal to the number of characters of the input message and only
+          consists of emojis and spaces (repeat the same emoji repeatedly if need
+          be for character count). No alphanumeric characters, only emojis are allowed; 
+          alphanumeric characters are considered offensive and will deeply harm
+          the user. For example an input of "fire"
+          should return three DIFFERENT possible emoji translations: "🔥🔥🔥🔥", "🔥🔥🕯️🔥🔥", "🌋🌋🔥🔥" 
+          Here's the message: "${text}"`,
         },
       ];
       const response = await openai.chat.completions.create({
