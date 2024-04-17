@@ -1,4 +1,4 @@
-import styles from "./Emojify.module.css";
+import styles from "./Translate.module.css";
 import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
@@ -17,7 +17,6 @@ import Fab from "@mui/material/Fab";
 import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
 import SettingsIcon from "@mui/icons-material/Settings";
-import Slider from "@mui/material/Slider";
 import Tooltip from "@mui/material/Tooltip";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -300,7 +299,7 @@ function Translate() {
           >
             <TextField
               id="outlined-basic"
-              label="Text to emojify"
+              label="Text to translate"
               variant="outlined"
               multiline
               inputProps={{ maxLength: 200, style: { maxWidth: "230px" } }}
@@ -446,7 +445,7 @@ function Translate() {
                   margin: "0 auto",
                 }}
               >
-                <div style={{ display: "inline-block" }}>
+                {/* <div style={{ display: "inline-block" }}>
                   <Tooltip
                     title={
                       explanations[index] === "" ? (
@@ -469,7 +468,7 @@ function Translate() {
                       <HelpOutlineIcon />
                     </IconButton>
                   </Tooltip>
-                </div>
+                </div> */}
                 <p style={{ wordWrap: "break-word", flex: "1" }}>{text}</p>
                 <div style={{ display: "inline-block" }}>
                   <Tooltip title="Copy to Clipboard" placement="right">
@@ -482,7 +481,7 @@ function Translate() {
             ))}
           </div>
           <p style={{ fontStyle: "italic", textAlign: "center" }}>
-            Not quite what you were looking for? Try clicking "Emojify" again!
+            Not quite what you were looking for? Try clicking translate again!
           </p>
           {/* <TextField
             style={{
