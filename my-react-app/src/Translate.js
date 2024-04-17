@@ -8,7 +8,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import MicIcon from "@mui/icons-material/Mic";
 import IconButton from "@mui/material/IconButton";
 import Snackbar from "@mui/material/Snackbar";
-import logo from "./static/emojify_logo.png";
+import logo from "./static/translate_logo.png";
 import CircularProgress from "@mui/material/CircularProgress";
 import SpeechRecognition, {
   useSpeechRecognition,
