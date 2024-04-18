@@ -455,7 +455,7 @@ function Emojify() {
                           size={20}
                         />
                       ) : (
-                        explanations[index]
+                        <span style={{ fontSize: "14px" }}>{explanations[index]}</span>
                       )
                     }
                     placement="left"
