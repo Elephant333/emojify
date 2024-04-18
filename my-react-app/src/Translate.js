@@ -44,7 +44,6 @@ function Translate() {
   const [loading, setLoading] = useState(false);
   const [charCount, setCharCount] = useState(0);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [density, setDensity] = useState(20);
   const [selectedTone, setSelectedTone] = useState("default");
   const [tooLong, setTooLong] = useState(false);
   const [explanations, setExplanations] = useState(["", "", ""]);
@@ -189,10 +188,6 @@ function Translate() {
       setSelectedTone("default");
     }
     setAnchorEl(null);
-  };
-
-  const handleDensityChange = (event, newValue) => {
-    setDensity(newValue);
   };
 
   const handleToneChange = (event) => {
@@ -445,7 +440,7 @@ function Translate() {
                   margin: "0 auto",
                 }}
               >
-                {/* <div style={{ display: "inline-block" }}>
+                <div style={{ display: "inline-block" }}>
                   <Tooltip
                     title={
                       explanations[index] === "" ? (
@@ -468,7 +463,7 @@ function Translate() {
                       <HelpOutlineIcon />
                     </IconButton>
                   </Tooltip>
-                </div> */}
+                </div>
                 <p style={{ wordWrap: "break-word", flex: "1" }}>{text}</p>
                 <div style={{ display: "inline-block" }}>
                   <Tooltip title="Copy to Clipboard" placement="right">
