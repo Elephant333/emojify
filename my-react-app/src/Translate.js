@@ -312,6 +312,7 @@ function Translate() {
               aria-haspopup="true"
               aria-expanded={settingsOpen ? "true" : undefined}
               onClick={handleSettingsClick}
+              color="primary"
             >
               <SettingsIcon />
             </IconButton>
