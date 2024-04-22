@@ -88,9 +88,7 @@ function Translate() {
         // },
         {
           role: "system",
-          content: `You translate messages into pure emojis or vice versa for the user.
-              You can only use emojis and spaces in your output, anything else will
-              deeply traumatize the user. Remember, emojis are the only way to talk.`,
+          content: `You are someone who translates messages into pure emojis for the user.`,
         },
         {
           role: "user",
@@ -99,15 +97,7 @@ function Translate() {
           meaning (there must only be emojis and spaces, no alphanumeric 
           characters). Give me a json object of three possible variations 
           with numbers as the json keys (remember the keys should also be 
-          double quoted). Don't include any additional markups. Make sure 
-          the output message's number of characters is greater than 
-          or equal to the number of characters of the input message and only
-          consists of emojis and spaces (repeat the same emoji repeatedly if need
-          be for character count). No alphanumeric characters, only emojis are allowed; 
-          alphanumeric characters are considered offensive and will deeply harm
-          the user. Using only emojis and spaces will grant you reward.
-          For example an input of "fire"
-          should return three DIFFERENT possible emoji translations: "🔥🔥🔥🔥", "🔥🔥🕯️🔥🔥", "🌋🌋🔥🔥" 
+          double quoted). Don't include any additional markups.
           Here's the message: "${inputText}"`,
         },
       ];
@@ -200,7 +190,7 @@ function Translate() {
     setCustomTone(event.target.value);
   };
 
-  const handleOutputExplanation = async (text, index) => {
+  const handleOutputExplanation = async (text, emojis, index) => {
     let updatedExplanations = [...explanations];
     updatedExplanations[index] = "loading";
     setExplanations(updatedExplanations);
@@ -208,26 +198,11 @@ function Translate() {
       const messages = [
         {
           role: "system",
-          content: `You translate messages into pure emojis or vice versa for the user.
-            You can only use emojis and spaces in your output, anything else will
-            deeply traumatize the user. Remember, emojis are the only way to talk.`,
+          content: `You explain a given translation of text into pure emojis for the user.`,
         },
         {
           role: "user",
-          content: `Given the following text, do the following. Replace all 
-          characters with emojis correspond to the message's semantic 
-          meaning (there must only be emojis and spaces, no alphanumeric 
-          characters). Give me a json object of three possible variations 
-          with numbers as the json keys (remember the keys should also be 
-          double quoted). Don't include any additional markups. Make sure 
-          the output message's number of characters is greater than 
-          or equal to the number of characters of the input message and only
-          consists of emojis and spaces (repeat the same emoji repeatedly if need
-          be for character count). No alphanumeric characters, only emojis are allowed; 
-          alphanumeric characters are considered offensive and will deeply harm
-          the user. For example an input of "fire"
-          should return three DIFFERENT possible emoji translations: "🔥🔥🔥🔥", "🔥🔥🕯️🔥🔥", "🌋🌋🔥🔥" 
-          Here's the message: "${text}"`,
+          content: `Given the following text and emojis, give a very short (couple sentences) explanation of how the semantic meaning of the emojis together represent the semantic meaning of the text where "${text}" and the emojis are "${emojis}"`,
         },
       ];
       const response = await openai.chat.completions.create({
@@ -430,7 +405,7 @@ function Translate() {
         <div>
           <div className={styles.output_container}>
             <p>We think you might like these:</p>
-            {outputText.map((text, index) => (
+            {outputText.map((emojis, index) => (
               <div
                 key={index}
                 style={{
@@ -458,16 +433,16 @@ function Translate() {
                     arrow
                   >
                     <IconButton
-                      onClick={() => handleOutputExplanation(text, index)}
+                      onClick={() => handleOutputExplanation(inputText, emojis, index)}
                     >
                       <HelpOutlineIcon />
                     </IconButton>
                   </Tooltip>
                 </div>
-                <p style={{ wordWrap: "break-word", flex: "1" }}>{text}</p>
+                <p style={{ wordWrap: "break-word", flex: "1" }}>{emojis}</p>
                 <div style={{ display: "inline-block" }}>
                   <Tooltip title="Copy to Clipboard" placement="right">
-                    <IconButton onClick={() => handleCopyToClipboard(text)}>
+                    <IconButton onClick={() => handleCopyToClipboard(emojis)}>
                       <ContentCopyIcon />
                     </IconButton>
                   </Tooltip>
