@@ -17,6 +17,7 @@ import Fab from "@mui/material/Fab";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import ThumbsPair from './components/ThumbsPair';
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -248,6 +249,7 @@ function EmojifySearch() {
                       <ContentCopyIcon />
                     </IconButton>
                   </Tooltip>
+                  <ThumbsPair />
                 </div>
               </div>
             ))}

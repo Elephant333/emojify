@@ -23,6 +23,7 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import ThumbsPair from "./components/ThumbsPair";
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -475,6 +476,7 @@ function Emojify() {
                       <ContentCopyIcon />
                     </IconButton>
                   </Tooltip>
+                  <ThumbsPair />
                 </div>
               </div>
             ))}
