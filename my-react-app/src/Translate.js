@@ -5,6 +5,7 @@ import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import OpenAI from "openai";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ThumbsPair from "./components/ThumbsPair";
 import MicIcon from "@mui/icons-material/Mic";
 import IconButton from "@mui/material/IconButton";
 import Snackbar from "@mui/material/Snackbar";
@@ -446,6 +447,7 @@ function Translate() {
                       <ContentCopyIcon />
                     </IconButton>
                   </Tooltip>
+                  <ThumbsPair />
                 </div>
               </div>
             ))}
