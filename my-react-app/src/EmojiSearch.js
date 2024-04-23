@@ -249,12 +249,15 @@ function EmojifySearch() {
                       <ContentCopyIcon />
                     </IconButton>
                   </Tooltip>
-                  <ThumbsPair />
                 </div>
               </div>
             ))}
           </div>
-          <p style={{ fontStyle: "italic", textAlign: "center" }}>
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <p style={{ fontStyle: "italic", marginRight: "5px"}}>How'd we do?</p>
+            <ThumbsPair />
+          </div>
+          <p style={{ fontStyle: "italic", textAlign: "center", marginTop: "0px" }}>
             Not quite what you were looking for? Try clicking search again!
           </p>
         </div>

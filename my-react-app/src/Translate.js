@@ -24,12 +24,12 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
-const GraphemeSplitter = require('grapheme-splitter');
+const GraphemeSplitter = require("grapheme-splitter");
 const splitter = new GraphemeSplitter();
 
 function truncateEmojiString(value, maxLength) {
-    const graphemes = splitter.splitGraphemes(value);
-    return graphemes.slice(0, maxLength).join('');
+  const graphemes = splitter.splitGraphemes(value);
+  return graphemes.slice(0, maxLength).join("");
 }
 
 const openai = new OpenAI({
@@ -93,8 +93,7 @@ function Translate() {
         },
         {
           role: "user",
-          content: `Given the following text, do the following. Replace all 
-          characters with emojis correspond to the message's semantic 
+          content: `Given the following text, convert it to a language of pure emojis correspond to the message's semantic 
           meaning (there must only be emojis and spaces, no alphanumeric 
           characters). Give me a json object of three possible variations 
           with numbers as the json keys (remember the keys should also be 
@@ -428,14 +427,16 @@ function Translate() {
                           size={20}
                         />
                       ) : (
-                        explanations[index]
+                        <span style={{ fontSize: "14px" }}>{explanations[index]}</span>
                       )
                     }
                     placement="left"
                     arrow
                   >
                     <IconButton
-                      onClick={() => handleOutputExplanation(inputText, emojis, index)}
+                      onClick={() =>
+                        handleOutputExplanation(inputText, emojis, index)
+                      }
                     >
                       <HelpOutlineIcon />
                     </IconButton>
@@ -448,12 +449,29 @@ function Translate() {
                       <ContentCopyIcon />
                     </IconButton>
                   </Tooltip>
-                  <ThumbsPair />
                 </div>
               </div>
             ))}
           </div>
-          <p style={{ fontStyle: "italic", textAlign: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <p style={{ fontStyle: "italic", marginRight: "5px" }}>
+              How'd we do?
+            </p>
+            <ThumbsPair />
+          </div>
+          <p
+            style={{
+              fontStyle: "italic",
+              textAlign: "center",
+              marginTop: "0px",
+            }}
+          >
             Not quite what you were looking for? Try clicking translate again!
           </p>
           {/* <TextField
