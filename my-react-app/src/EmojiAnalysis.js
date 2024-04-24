@@ -4,9 +4,7 @@ import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import OpenAI from "openai";
-import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import MicIcon from "@mui/icons-material/Mic";
-import IconButton from "@mui/material/IconButton";
 import Snackbar from "@mui/material/Snackbar";
 import logo from "./static/analyzer_logo.png";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -77,11 +75,6 @@ function EmojiAnalysis() {
       setOutputText([-1]);
     }
     setLoading(false);
-  };
-
-  const handleCopyToClipboard = (text) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
   };
 
   const handleCloseCopy = (event, reason) => {

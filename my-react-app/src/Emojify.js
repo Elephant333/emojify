@@ -1,5 +1,5 @@
 import styles from "./Emojify.module.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -42,6 +42,7 @@ function Emojify() {
   const [selectedTone, setSelectedTone] = useState("default");
   const [tooLong, setTooLong] = useState(false);
   const [explanations, setExplanations] = useState(["", "", ""]);
+  const [isTextFieldClicked, setIsTextFieldClicked] = useState(false);
 
   const {
     transcript,
@@ -215,6 +216,21 @@ function Emojify() {
     }
   };
 
+  const textFieldRef = useRef(null);
+  const handleTextFieldClick = () => {
+    setIsTextFieldClicked(true);
+  };
+
+  useEffect(() => {
+    if (isTextFieldClicked) {
+      textFieldRef.current.focus();
+    }
+  }, [isTextFieldClicked]);
+  
+  const handleTextFieldBlur = () => {
+    setIsTextFieldClicked(false);
+  };
+
   return (
     <div>
       <img src={logo} alt="Emojify Logo" className={styles.logo} />
@@ -261,10 +277,11 @@ function Emojify() {
             }}
           >
             <TextField
+              inputRef={textFieldRef}
               id="outlined-basic"
               label="Text to emojify"
               variant="outlined"
-              multiline
+              multiline={isTextFieldClicked}
               inputProps={{ maxLength: 200, style: { maxWidth: "230px" } }}
               sx={{ minWidth: 300 }}
               value={inputText}
@@ -274,8 +291,11 @@ function Emojify() {
                 if (event.key === "Enter" && !event.shiftKey) {
                   event.preventDefault();
                   handleEmojifyClick();
+                  handleTextFieldBlur();
                 }
               }}
+              onClick={handleTextFieldClick}
+              onBlur={handleTextFieldBlur}
             />
             {charCount > 0 && (
               <p

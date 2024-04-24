@@ -2,7 +2,7 @@ import "./App.css";
 import Emojify from "./Emojify";
 import EmojiAnalysis from "./EmojiAnalysis";
 import EmojiSearch from "./EmojiSearch";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
