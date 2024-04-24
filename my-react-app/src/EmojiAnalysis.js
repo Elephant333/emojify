@@ -29,10 +29,8 @@ function EmojiAnalysis() {
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [charCount, setCharCount] = useState(0);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedTone, setSelectedTone] = useState("default");
   const [tooLong, setTooLong] = useState(false);
-  const [explanations, setExplanations] = useState(["", "", ""]);
+  const [error, setError] = useState(false);
 
   const {
     transcript,
@@ -54,7 +52,6 @@ function EmojiAnalysis() {
       return;
     }
     setLoading(true);
-    setExplanations(["", "", ""]);
     try {
       const messages = [
         {
@@ -117,6 +114,11 @@ function EmojiAnalysis() {
     }
   };
 
+  const hasEmoji = (str) => {
+    const emojiRegex = /[\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
+    return str.match(emojiRegex) !== null;
+  };
+
   return (
     <div>
       <img src={logo} alt="Emojify Logo" className={styles.logo} />
@@ -175,9 +177,16 @@ function EmojiAnalysis() {
               onKeyDown={(event) => {
                 if (event.key === "Enter" && !event.shiftKey) {
                   event.preventDefault();
+                  if (!hasEmoji(inputText)) {
+                    setError(true);
+                    return;
+                  }
+                  setError(false);
                   handleEmojifyClick();
                 }
               }}
+              error={error}
+              helperText={error ? "Must include emojis" : ""}
             />
             {charCount > 0 && (
               <p
@@ -229,14 +238,7 @@ function EmojiAnalysis() {
                   margin: "0 auto",
                 }}
               >
-                <p style={{ wordWrap: "break-word", flex: "1" }}>{outputText}</p>
-                <div style={{ display: "inline-block" }}>
-                  <Tooltip title="Copy to Clipboard" placement="right">
-                    <IconButton onClick={() => handleCopyToClipboard(outputText)}>
-                      <ContentCopyIcon />
-                    </IconButton>
-                  </Tooltip>
-                </div>
+                <p style={{ wordWrap: "break-word", flex: "1", textAlign: "center" }}>{outputText}</p>
               </div>
           </div>
           <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -246,29 +248,6 @@ function EmojiAnalysis() {
           <p style={{ fontStyle: "italic", textAlign: "center", marginTop: "0px" }}>
             Not quite what you were looking for? Try clicking the "Analyze" button again!
           </p>
-          {/* <TextField
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              maxWidth: "200px",
-              margin: "0 auto",
-            }}
-            id="outlined-basic"
-            label="Feedback for the AI to use for next Emojify"
-            variant="outlined"
-            multiline
-            inputProps={{ maxLength: 200, style: { maxWidth: "230px" } }}
-            sx={{ minWidth: 300 }}
-            value={feedbackInputForm}
-            onChange={handleFeedbackInputChange}
-            // enter to submit, shift+enter to linebreak
-            onKeyDown={(event) => {
-              if (event.key === "Enter" && !event.shiftKey) {
-                event.preventDefault();
-                handleFeedbackClick();
-              }
-            }}
-          /> */}
         </div>
       )}
       <Snackbar
