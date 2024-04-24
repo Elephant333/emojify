@@ -230,23 +230,46 @@ function EmojiAnalysis() {
         <div>
           <div className={styles.output_container}>
             <p>We think you might like this analysis:</p>
-              <div
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                maxWidth: "900px",
+                margin: "0 auto",
+              }}
+            >
+              <p
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  maxWidth: "900px",
-                  margin: "0 auto",
+                  wordWrap: "break-word",
+                  flex: "1",
+                  textAlign: "center",
                 }}
               >
-                <p style={{ wordWrap: "break-word", flex: "1", textAlign: "center" }}>{outputText}</p>
-              </div>
+                {outputText}
+              </p>
+            </div>
           </div>
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <p style={{ fontStyle: "italic", marginRight: "5px"}}>How'd we do?</p>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <p style={{ fontStyle: "italic", marginRight: "5px" }}>
+              How'd we do?
+            </p>
             <ThumbsPair />
           </div>
-          <p style={{ fontStyle: "italic", textAlign: "center", marginTop: "0px" }}>
-            Not quite what you were looking for? Try clicking the "Analyze" button again!
+          <p
+            style={{
+              fontStyle: "italic",
+              textAlign: "center",
+              marginTop: "0px",
+            }}
+          >
+            Not quite what you were looking for? Try clicking the "Analyze"
+            button again!
           </p>
         </div>
       )}

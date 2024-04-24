@@ -16,8 +16,8 @@ import SpeechRecognition, {
 import Fab from "@mui/material/Fab";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import ThumbsPair from './components/ThumbsPair';
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import ThumbsPair from "./components/ThumbsPair";
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -234,7 +234,7 @@ function EmojifySearch() {
                 <div style={{ display: "inline-block" }}>
                   <Tooltip title={textObject.name} placement="left">
                     <IconButton>
-                        <InfoOutlinedIcon />
+                      <InfoOutlinedIcon />
                     </IconButton>
                   </Tooltip>
                 </div>
@@ -253,11 +253,25 @@ function EmojifySearch() {
               </div>
             ))}
           </div>
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <p style={{ fontStyle: "italic", marginRight: "5px"}}>How'd we do?</p>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <p style={{ fontStyle: "italic", marginRight: "5px" }}>
+              How'd we do?
+            </p>
             <ThumbsPair />
           </div>
-          <p style={{ fontStyle: "italic", textAlign: "center", marginTop: "0px" }}>
+          <p
+            style={{
+              fontStyle: "italic",
+              textAlign: "center",
+              marginTop: "0px",
+            }}
+          >
             Not quite what you were looking for? Try clicking search again!
           </p>
         </div>

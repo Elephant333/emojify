@@ -4,8 +4,8 @@ import EmojiAnalysis from "./EmojiAnalysis";
 import EmojiSearch from "./EmojiSearch";
 import React from "react";
 import Box from "@mui/material/Box";
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 import EmojifyTranslate from "./EmojifyTranslate";
 function App() {
   const [tab, setTab] = React.useState(0);
@@ -15,8 +15,17 @@ function App() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Box sx={{ width: '100%', bgcolor: 'background.paper', position: "fixed", top: "0px" }}>
+    <div
+      style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
+    >
+      <Box
+        sx={{
+          width: "100%",
+          bgcolor: "background.paper",
+          position: "fixed",
+          top: "0px",
+        }}
+      >
         <Tabs value={tab} onChange={handleTabChange} centered>
           <Tab label="Emojify" />
           <Tab label="Emoji Search" />
@@ -24,23 +33,15 @@ function App() {
           <Tab label="Emoji Translate" />
         </Tabs>
       </Box>
-      {tab === 0 && (
-        <Emojify />
-      )}
-      {tab === 1 && (
-        <EmojiSearch />
-      )}
-      {tab === 2 && (
-        <EmojiAnalysis />
-      )}
-      {tab === 3 && (
-        <EmojifyTranslate />
-      )}
+      {tab === 0 && <Emojify />}
+      {tab === 1 && <EmojiSearch />}
+      {tab === 2 && <EmojiAnalysis />}
+      {tab === 3 && <EmojifyTranslate />}
       <p
         style={{
           marginTop: "auto",
           textAlign: "center",
-          width: "100%"
+          width: "100%",
         }}
       >
         By Nathan Li & Edward Kang

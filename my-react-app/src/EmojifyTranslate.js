@@ -41,8 +41,8 @@ function EmojifyTranslate() {
   const [selectedTone, setSelectedTone] = useState("default");
   const [tooLong, setTooLong] = useState(false);
   const [explanations, setExplanations] = useState(["", "", ""]);
-  const [languageFrom, setLanguageFrom] = useState('Text');
-  const [languageTo, setLanguageTo] = useState('Emojis');
+  const [languageFrom, setLanguageFrom] = useState("Text");
+  const [languageTo, setLanguageTo] = useState("Emojis");
   const [error, setError] = useState(false);
   const [isTextFieldClicked, setIsTextFieldClicked] = useState(false);
 
@@ -67,7 +67,7 @@ function EmojifyTranslate() {
     }
     setLoading(true);
     setExplanations(["", "", ""]);
-    if (languageTo === 'Emojis') {
+    if (languageTo === "Emojis") {
       try {
         const messages = [
           {
@@ -148,7 +148,7 @@ function EmojifyTranslate() {
           Object.fromEntries(
             Object.entries(JSON.parse(output)).map(([key, value]) => [
               key,
-              value
+              value,
             ])
           )
         );
@@ -224,13 +224,12 @@ function EmojifyTranslate() {
     updatedExplanations[index] = "loading";
     setExplanations(updatedExplanations);
     // Setting up explanations based on direction of translation (text to emojis or emojis to text)
-    let systemMessage = ""; 
+    let systemMessage = "";
     let userMessage = "";
     if (languageTo === "Emojis") {
       systemMessage = `You explain a given translation of text into pure emojis for the user.`;
       userMessage = `Given the following text and emojis, give a very short (couple sentences) explanation of how the semantic meaning of the emojis together represent the semantic meaning of the text where the text is "${from}" and the emojis are "${to}"`;
-    }
-    else {
+    } else {
       systemMessage = `You explain a given translation of emojis into text for the user (from emojis to text). You explain how the text is a good translation from the emojis`;
       userMessage = `Given the following text, give a very short (couple sentences) explanation of how the semantic meaning of the text represents the semantic meaning of the emojis where the emojis are "${from}" and the text is "${to}"`;
     }
@@ -276,7 +275,7 @@ function EmojifyTranslate() {
       textFieldRef.current.setSelectionRange(cursorPosition, cursorPosition);
     }, 0);
   };
-  
+
   const handleTextFieldBlur = () => {
     setIsTextFieldClicked(false);
   };
@@ -284,7 +283,7 @@ function EmojifyTranslate() {
   return (
     <div>
       <img src={logo} alt="Emojify Translate Logo" className={styles.logo} />
-      <div style={{marginTop: "30px"}}>
+      <div style={{ marginTop: "30px" }}>
         <LanguageSwitcher
           languageFrom={languageFrom}
           setLanguageFrom={setLanguageFrom}
@@ -304,8 +303,10 @@ function EmojifyTranslate() {
           >
             <Box
               sx={{ m: 1, position: "relative" }}
-              style={{ marginTop: "4px", 
-                       visibility: languageTo === "Emojis" ? "visible" : "hidden"}}
+              style={{
+                marginTop: "4px",
+                visibility: languageTo === "Emojis" ? "visible" : "hidden",
+              }}
             >
               <Fab
                 aria-label="listen"
@@ -338,14 +339,21 @@ function EmojifyTranslate() {
             <TextField
               inputRef={textFieldRef}
               id="outlined-basic"
-              label={languageFrom === "Text" ? "Text to translate" : "Emojis to translate"}
+              label={
+                languageFrom === "Text"
+                  ? "Text to translate"
+                  : "Emojis to translate"
+              }
               variant="outlined"
               multiline={isTextFieldClicked}
               inputProps={{ maxLength: 200, style: { maxWidth: "230px" } }}
-              sx={{ minWidth: 300, "& .MuiInputBase-input": {
-                overflow: "hidden",
-                textOverflow: "ellipsis"
-              } }}
+              sx={{
+                minWidth: 300,
+                "& .MuiInputBase-input": {
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                },
+              }}
               value={inputText}
               onChange={handleInputChange}
               // enter to submit, shift+enter to linebreak
@@ -516,7 +524,9 @@ function EmojifyTranslate() {
                           size={20}
                         />
                       ) : (
-                        <span style={{ fontSize: "14px" }}>{explanations[index]}</span>
+                        <span style={{ fontSize: "14px" }}>
+                          {explanations[index]}
+                        </span>
                       )
                     }
                     placement="left"
@@ -561,7 +571,8 @@ function EmojifyTranslate() {
               marginTop: "0px",
             }}
           >
-            Not quite what you were looking for? Try clicking the "Translate" button again!
+            Not quite what you were looking for? Try clicking the "Translate"
+            button again!
           </p>
         </div>
       )}

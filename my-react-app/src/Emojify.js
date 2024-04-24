@@ -225,7 +225,7 @@ function Emojify() {
       textFieldRef.current.setSelectionRange(cursorPosition, cursorPosition);
     }, 0);
   };
-  
+
   const handleTextFieldBlur = () => {
     setIsTextFieldClicked(false);
   };
@@ -282,10 +282,13 @@ function Emojify() {
               variant="outlined"
               multiline={isTextFieldClicked}
               inputProps={{ maxLength: 200, style: { maxWidth: "230px" } }}
-              sx={{ minWidth: 300, "& .MuiInputBase-input": {
-                overflow: "hidden",
-                textOverflow: "ellipsis"
-              } }}
+              sx={{
+                minWidth: 300,
+                "& .MuiInputBase-input": {
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                },
+              }}
               value={inputText}
               onChange={handleInputChange}
               // enter to submit, shift+enter to linebreak
@@ -464,7 +467,9 @@ function Emojify() {
                           size={20}
                         />
                       ) : (
-                        <span style={{ fontSize: "14px" }}>{explanations[index]}</span>
+                        <span style={{ fontSize: "14px" }}>
+                          {explanations[index]}
+                        </span>
                       )
                     }
                     placement="left"
@@ -477,7 +482,15 @@ function Emojify() {
                     </IconButton>
                   </Tooltip>
                 </div>
-                <p style={{ wordWrap: "break-word", flex: "1", textAlign: "center" }}>{text}</p>
+                <p
+                  style={{
+                    wordWrap: "break-word",
+                    flex: "1",
+                    textAlign: "center",
+                  }}
+                >
+                  {text}
+                </p>
                 <div style={{ display: "inline-block" }}>
                   <Tooltip title="Copy to Clipboard" placement="right">
                     <IconButton onClick={() => handleCopyToClipboard(text)}>
@@ -488,12 +501,27 @@ function Emojify() {
               </div>
             ))}
           </div>
-          <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <p style={{ fontStyle: "italic", marginRight: "5px"}}>How'd we do?</p>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <p style={{ fontStyle: "italic", marginRight: "5px" }}>
+              How'd we do?
+            </p>
             <ThumbsPair />
           </div>
-          <p style={{ fontStyle: "italic", textAlign: "center", marginTop: "0px" }}>
-            Not quite what you were looking for? Try clicking the "Emojify" button again!
+          <p
+            style={{
+              fontStyle: "italic",
+              textAlign: "center",
+              marginTop: "0px",
+            }}
+          >
+            Not quite what you were looking for? Try clicking the "Emojify"
+            button again!
           </p>
         </div>
       )}
