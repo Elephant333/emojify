@@ -40,7 +40,7 @@ const ThumbsPair = () => {
           },
         }}
       >
-        <IconButton onClick={handleThumbsUp} color="primary">
+        <IconButton onClick={handleThumbsUp}>
           {isThumbsUp ? <ThumbUpAltIcon /> : <ThumbUpOffAltIcon />}
         </IconButton>
       </Tooltip>
@@ -60,7 +60,7 @@ const ThumbsPair = () => {
           },
         }}
       >
-        <IconButton onClick={handleThumbsDown} color="secondary">
+        <IconButton onClick={handleThumbsDown}>
           {isThumbsDown ? <ThumbDownAltIcon /> : <ThumbDownOffAltIcon />}
         </IconButton>
       </Tooltip>

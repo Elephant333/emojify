@@ -42,8 +42,6 @@ function Emojify() {
   const [selectedTone, setSelectedTone] = useState("default");
   const [tooLong, setTooLong] = useState(false);
   const [explanations, setExplanations] = useState(["", "", ""]);
-  // const [feedbackInputForm, setFeedbackInputForm] = useState("");
-  // const [userFeedback, setUserFeedback] = useState("");
 
   const {
     transcript,
@@ -60,10 +58,6 @@ function Emojify() {
     setInputText(event.target.value);
   };
 
-  // const handleFeedbackInputChange = (event) => {
-  //   setFeedbackInputForm(event.target.value);
-  // };
-
   const densityToPrompt = {
     0: "Use emojis very sparingly.",
     10: "Use emojis sparingly.",
@@ -71,11 +65,6 @@ function Emojify() {
     30: "Use emojis generously.",
     40: "Use an absurdly large amount of emojis.",
   };
-
-  // const handleFeedbackClick = async () => {
-  //   setUserFeedback(feedbackInputForm);
-  //   console.log("user feedback is now ", userFeedback);
-  // };
 
   const handleEmojifyClick = async () => {
     if (inputText === "") {
@@ -85,10 +74,6 @@ function Emojify() {
     setExplanations(["", "", ""]);
     try {
       const messages = [
-        // {
-        //   role: "system",
-        //   content: userFeedback
-        // },
         {
           role: "system",
           content: "You help add emojies appropriately to text messages.",
@@ -470,7 +455,7 @@ function Emojify() {
                     </IconButton>
                   </Tooltip>
                 </div>
-                <p style={{ wordWrap: "break-word", flex: "1" }}>{text}</p>
+                <p style={{ wordWrap: "break-word", flex: "1", textAlign: "center" }}>{text}</p>
                 <div style={{ display: "inline-block" }}>
                   <Tooltip title="Copy to Clipboard" placement="right">
                     <IconButton onClick={() => handleCopyToClipboard(text)}>
@@ -488,29 +473,6 @@ function Emojify() {
           <p style={{ fontStyle: "italic", textAlign: "center", marginTop: "0px" }}>
             Not quite what you were looking for? Try clicking the "Emojify" button again!
           </p>
-          {/* <TextField
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              maxWidth: "200px",
-              margin: "0 auto",
-            }}
-            id="outlined-basic"
-            label="Feedback for the AI to use for next Emojify"
-            variant="outlined"
-            multiline
-            inputProps={{ maxLength: 200, style: { maxWidth: "230px" } }}
-            sx={{ minWidth: 300 }}
-            value={feedbackInputForm}
-            onChange={handleFeedbackInputChange}
-            // enter to submit, shift+enter to linebreak
-            onKeyDown={(event) => {
-              if (event.key === "Enter" && !event.shiftKey) {
-                event.preventDefault();
-                handleFeedbackClick();
-              }
-            }}
-          /> */}
         </div>
       )}
       <Snackbar

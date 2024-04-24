@@ -1,4 +1,4 @@
-import styles from "./Emojify.module.css";
+import styles from "./EmojiAnalysis.module.css";
 import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
@@ -15,14 +15,7 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import Fab from "@mui/material/Fab";
 import Box from "@mui/material/Box";
-import Menu from "@mui/material/Menu";
-import SettingsIcon from "@mui/icons-material/Settings";
-import Slider from "@mui/material/Slider";
 import Tooltip from "@mui/material/Tooltip";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ThumbsPair from "./components/ThumbsPair";
 
 const openai = new OpenAI({
@@ -30,20 +23,16 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-function Emojify() {
+function EmojiAnalysis() {
   const [inputText, setInputText] = useState("");
-  const [customTone, setCustomTone] = useState("");
   const [outputText, setOutputText] = useState([]);
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
   const [charCount, setCharCount] = useState(0);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [density, setDensity] = useState(20);
   const [selectedTone, setSelectedTone] = useState("default");
   const [tooLong, setTooLong] = useState(false);
   const [explanations, setExplanations] = useState(["", "", ""]);
-  // const [feedbackInputForm, setFeedbackInputForm] = useState("");
-  // const [userFeedback, setUserFeedback] = useState("");
 
   const {
     transcript,
@@ -60,23 +49,6 @@ function Emojify() {
     setInputText(event.target.value);
   };
 
-  // const handleFeedbackInputChange = (event) => {
-  //   setFeedbackInputForm(event.target.value);
-  // };
-
-  const densityToPrompt = {
-    0: "Use emojis very sparingly.",
-    10: "Use emojis sparingly.",
-    20: "",
-    30: "Use emojis generously.",
-    40: "Use an absurdly large amount of emojis.",
-  };
-
-  // const handleFeedbackClick = async () => {
-  //   setUserFeedback(feedbackInputForm);
-  //   console.log("user feedback is now ", userFeedback);
-  // };
-
   const handleEmojifyClick = async () => {
     if (inputText === "") {
       return;
@@ -85,17 +57,13 @@ function Emojify() {
     setExplanations(["", "", ""]);
     try {
       const messages = [
-        // {
-        //   role: "system",
-        //   content: userFeedback
-        // },
         {
           role: "system",
           content: "You analyze text messages that include emojis.",
         },
         {
           role: "user",
-          content: `Given the following text message with emojis, analyze the message, especially the emoji. Don't include any additional markups. Here's the message: "${inputText}"`,
+          content: `Given the following text message with emojis, analyze the tone and meaning of the message while taking the emojis and punctuation into account. Don't include any additional markups. Here's the message: "${inputText}"`,
         },
       ];
       const response = await openai.chat.completions.create({
@@ -146,77 +114,6 @@ function Emojify() {
     } else {
       resetTranscript();
       SpeechRecognition.startListening({ continuous: true });
-    }
-  };
-
-  const settingsOpen = Boolean(anchorEl);
-  const handleSettingsClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleSettingsClose = () => {
-    if (selectedTone === "") {
-      setSelectedTone("default");
-    }
-    setAnchorEl(null);
-  };
-  const marks = [
-    {
-      value: 0,
-      label: "A Few",
-    },
-    {
-      value: 20,
-      label: "Default",
-    },
-    {
-      value: 40,
-      label: "A Lot",
-    },
-  ];
-
-  const handleDensityChange = (event, newValue) => {
-    setDensity(newValue);
-  };
-
-  const handleToneChange = (event) => {
-    setCustomTone("");
-    setSelectedTone(event.target.value);
-  };
-
-  const handleCustomToneChange = (event) => {
-    setSelectedTone(event.target.value);
-    setCustomTone(event.target.value);
-  };
-
-  const handleOutputExplanation = async (text, index) => {
-    let updatedExplanations = [...explanations];
-    updatedExplanations[index] = "loading";
-    setExplanations(updatedExplanations);
-    try {
-      const messages = [
-        {
-          role: "system",
-          content: "You interpret messages and their emojis for the user.",
-        },
-        {
-          role: "user",
-          content: `Given the following text message, give a very short (couple sentences) analysis of the message's tone/meaning and how the emojis contribute to that: "${text}"`,
-        },
-      ];
-      const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: messages,
-      });
-
-      let output = response.choices[0].message.content;
-      let updatedExplanations = [...explanations];
-      updatedExplanations[index] = output;
-      setExplanations(updatedExplanations);
-    } catch (error) {
-      console.error("Error:", error);
-      let updatedExplanations = [...explanations];
-      updatedExplanations[index] = "Ack! Something goofed, try clicking again";
-      setExplanations(updatedExplanations);
     }
   };
 
@@ -392,4 +289,4 @@ function Emojify() {
   );
 }
 
-export default Emojify;
+export default EmojiAnalysis;

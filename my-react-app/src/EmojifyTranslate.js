@@ -25,14 +25,6 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import LanguageSwitcher from "./components/LanguageSwitcher";
 
-// const GraphemeSplitter = require("grapheme-splitter");
-// const splitter = new GraphemeSplitter();
-
-// function truncateEmojiString(value, maxLength) {
-//   const graphemes = splitter.splitGraphemes(value);
-//   return graphemes.slice(0, maxLength).join("");
-// }
-
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true,
@@ -51,8 +43,6 @@ function EmojifyTranslate() {
   const [explanations, setExplanations] = useState(["", "", ""]);
   const [languageFrom, setLanguageFrom] = useState('Text');
   const [languageTo, setLanguageTo] = useState('Emojis');
-  // const [feedbackInputForm, setFeedbackInputForm] = useState("");
-  // const [userFeedback, setUserFeedback] = useState("");
 
   const {
     transcript,
@@ -69,15 +59,6 @@ function EmojifyTranslate() {
     setInputText(event.target.value);
   };
 
-  // const handleFeedbackInputChange = (event) => {
-  //   setFeedbackInputForm(event.target.value);
-  // };
-
-  // const handleFeedbackClick = async () => {
-  //   setUserFeedback(feedbackInputForm);
-  //   console.log("user feedback is now ", userFeedback);
-  // };
-
   const handleEmojifyClick = async () => {
     if (inputText === "") {
       return;
@@ -87,10 +68,6 @@ function EmojifyTranslate() {
     if (languageTo === 'Emojis') {
       try {
         const messages = [
-          // {
-          //   role: "system",
-          //   content: userFeedback
-          // },
           {
             role: "system",
             content: `You are someone who translates messages into pure emojis for the user.`,
@@ -138,10 +115,6 @@ function EmojifyTranslate() {
     } else {
       try {
         const messages = [
-          // {
-          //   role: "system",
-          //   content: userFeedback
-          // },
           {
             role: "system",
             content: `You are someone who translates emojis into text messages for the user.`,
@@ -290,12 +263,14 @@ function EmojifyTranslate() {
   return (
     <div>
       <img src={logo} alt="Emojify Translate Logo" className={styles.logo} />
-      <LanguageSwitcher
-        languageFrom={languageFrom}
-        setLanguageFrom={setLanguageFrom}
-        languageTo={languageTo}
-        setLanguageTo={setLanguageTo}
-      />
+      <div style={{marginTop: "30px"}}>
+        <LanguageSwitcher
+          languageFrom={languageFrom}
+          setLanguageFrom={setLanguageFrom}
+          languageTo={languageTo}
+          setLanguageTo={setLanguageTo}
+        />
+      </div>
       <div className={styles.input_container}>
         <Stack spacing={2} direction="row" alignItems="flex-start">
           <Tooltip
@@ -546,29 +521,6 @@ function EmojifyTranslate() {
           >
             Not quite what you were looking for? Try clicking the "Translate" button again!
           </p>
-          {/* <TextField
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              maxWidth: "200px",
-              margin: "0 auto",
-            }}
-            id="outlined-basic"
-            label="Feedback for the AI to use for next Emojify"
-            variant="outlined"
-            multiline
-            inputProps={{ maxLength: 200, style: { maxWidth: "230px" } }}
-            sx={{ minWidth: 300 }}
-            value={feedbackInputForm}
-            onChange={handleFeedbackInputChange}
-            // enter to submit, shift+enter to linebreak
-            onKeyDown={(event) => {
-              if (event.key === "Enter" && !event.shiftKey) {
-                event.preventDefault();
-                handleFeedbackClick();
-              }
-            }}
-          /> */}
         </div>
       )}
       <Snackbar

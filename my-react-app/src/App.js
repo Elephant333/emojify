@@ -15,8 +15,8 @@ function App() {
   };
 
   return (
-    <div>
-      <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <Box sx={{ width: '100%', bgcolor: 'background.paper', position: "fixed", top: "0px" }}>
         <Tabs value={tab} onChange={handleTabChange} centered>
           <Tab label="Emojify" />
           <Tab label="Emoji Search" />
@@ -38,10 +38,9 @@ function App() {
       )}
       <p
         style={{
-          position: "fixed",
-          bottom: "0px",
+          marginTop: "auto",
           textAlign: "center",
-          width: "100%",
+          width: "100%"
         }}
       >
         By Nathan Li & Edward Kang
