@@ -25,13 +25,13 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import LanguageSwitcher from "./components/LanguageSwitcher";
 
-const GraphemeSplitter = require("grapheme-splitter");
-const splitter = new GraphemeSplitter();
+// const GraphemeSplitter = require("grapheme-splitter");
+// const splitter = new GraphemeSplitter();
 
-function truncateEmojiString(value, maxLength) {
-  const graphemes = splitter.splitGraphemes(value);
-  return graphemes.slice(0, maxLength).join("");
-}
+// function truncateEmojiString(value, maxLength) {
+//   const graphemes = splitter.splitGraphemes(value);
+//   return graphemes.slice(0, maxLength).join("");
+// }
 
 const openai = new OpenAI({
   apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -84,55 +84,106 @@ function EmojifyTranslate() {
     }
     setLoading(true);
     setExplanations(["", "", ""]);
-    try {
-      const messages = [
-        // {
-        //   role: "system",
-        //   content: userFeedback
-        // },
-        {
-          role: "system",
-          content: `You are someone who translates messages into pure emojis for the user.`,
-        },
-        {
-          role: "user",
-          content: `Given the following text, convert it to a language of pure emojis correspond to the message's semantic 
-          meaning (there must only be emojis and spaces, no alphanumeric 
-          characters). Give me a json object of three possible variations 
-          with numbers as the json keys (remember the keys should also be 
-          double quoted). Don't include any additional markups.
-          Here's the message: "${inputText}"`,
-        },
-      ];
-      if (selectedTone !== "default") {
-        messages.push({
-          role: "user",
-          content: `Try to create a ${selectedTone} tone.`,
+    if (languageTo === 'Emojis') {
+      try {
+        const messages = [
+          // {
+          //   role: "system",
+          //   content: userFeedback
+          // },
+          {
+            role: "system",
+            content: `You are someone who translates messages into pure emojis for the user.`,
+          },
+          {
+            role: "user",
+            content: `Given the following text, convert it to a language of pure emojis correspond to the message's semantic 
+            meaning (there must only be emojis and spaces, no alphanumeric 
+            characters). Give me a json object of three possible variations 
+            with numbers as the json keys (remember the keys should also be 
+            double quoted). Don't include any additional markups.
+            Here's the message: "${inputText}"`,
+          },
+        ];
+        if (selectedTone !== "default") {
+          messages.push({
+            role: "user",
+            content: `Try to create a ${selectedTone} tone.`,
+          });
+        }
+        const response = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages: messages,
         });
-      }
-      const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: messages,
-      });
 
-      // output looks like { "1": "what's good gang 👋", "2": "what's good gang 🤙", "3": "what's good gang 💪" }
-      let output = response.choices[0].message.content;
-      console.log("output is " + output);
-      console.log("inputText.length is" + inputText.length);
-      output = JSON.stringify(
-        Object.fromEntries(
-          Object.entries(JSON.parse(output)).map(([key, value]) => [
-            key,
-            truncateEmojiString(value, inputText.length),
-          ])
-        )
-      );
-      output = Object.values(JSON.parse(output));
-      setOutputText(output);
-      console.log("truncated output is" + output);
-    } catch (error) {
-      console.error("Error:", error);
-      setOutputText([-1]);
+        // output looks like { "1": "what's good gang 👋", "2": "what's good gang 🤙", "3": "what's good gang 💪" }
+        let output = response.choices[0].message.content;
+        console.log("output is " + output);
+        console.log("inputText.length is" + inputText.length);
+        output = JSON.stringify(
+          Object.fromEntries(
+            Object.entries(JSON.parse(output)).map(([key, value]) => [
+              key,
+              value,
+            ])
+          )
+        );
+        output = Object.values(JSON.parse(output));
+        setOutputText(output);
+        console.log("truncated output is" + output);
+      } catch (error) {
+        console.error("Error:", error);
+        setOutputText([-1]);
+      }
+    } else {
+      try {
+        const messages = [
+          // {
+          //   role: "system",
+          //   content: userFeedback
+          // },
+          {
+            role: "system",
+            content: `You are someone who translates emojis into text messages for the user.`,
+          },
+          {
+            role: "user",
+            content: `Given the following emojis, convert it to a text message that could be derived from the semantic meaning of the emojis together. Give me a json object of three possible variations 
+            with numbers as the json keys (remember the keys should also be 
+            double quoted). Don't include any additional markups. Use full sentences.
+            Here's the message: "${inputText}"`,
+          },
+        ];
+        if (selectedTone !== "default") {
+          messages.push({
+            role: "user",
+            content: `Try to create a ${selectedTone} tone.`,
+          });
+        }
+        const response = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages: messages,
+        });
+
+        // output looks like { "1": "what's good gang 👋", "2": "what's good gang 🤙", "3": "what's good gang 💪" }
+        let output = response.choices[0].message.content;
+        console.log("output is " + output);
+        console.log("inputText.length is" + inputText.length);
+        output = JSON.stringify(
+          Object.fromEntries(
+            Object.entries(JSON.parse(output)).map(([key, value]) => [
+              key,
+              value
+            ])
+          )
+        );
+        output = Object.values(JSON.parse(output));
+        setOutputText(output);
+        console.log("truncated output is" + output);
+      } catch (error) {
+        console.error("Error:", error);
+        setOutputText([-1]);
+      }
     }
     setLoading(false);
   };
@@ -246,7 +297,8 @@ function EmojifyTranslate() {
           >
             <Box
               sx={{ m: 1, position: "relative" }}
-              style={{ marginTop: "4px" }}
+              style={{ marginTop: "4px", 
+                       visibility: languageTo === "Emojis" ? "visible" : "hidden"}}
             >
               <Fab
                 aria-label="listen"
