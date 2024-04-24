@@ -347,7 +347,7 @@ function Emojify() {
             <ThumbsPair />
           </div>
           <p style={{ fontStyle: "italic", textAlign: "center", marginTop: "0px" }}>
-            Not quite what you were looking for? Try clicking the "Emojify" button again!
+            Not quite what you were looking for? Try clicking the "Analyze" button again!
           </p>
           {/* <TextField
             style={{

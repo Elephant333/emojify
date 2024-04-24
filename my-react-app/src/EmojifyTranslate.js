@@ -544,7 +544,7 @@ function EmojifyTranslate() {
               marginTop: "0px",
             }}
           >
-            Not quite what you were looking for? Try clicking translate again!
+            Not quite what you were looking for? Try clicking the "Translate" button again!
           </p>
           {/* <TextField
             style={{
