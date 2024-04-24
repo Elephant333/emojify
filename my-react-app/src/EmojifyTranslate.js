@@ -342,7 +342,10 @@ function EmojifyTranslate() {
               variant="outlined"
               multiline={isTextFieldClicked}
               inputProps={{ maxLength: 200, style: { maxWidth: "230px" } }}
-              sx={{ minWidth: 300 }}
+              sx={{ minWidth: 300, "& .MuiInputBase-input": {
+                overflow: "hidden",
+                textOverflow: "ellipsis"
+              } }}
               value={inputText}
               onChange={handleInputChange}
               // enter to submit, shift+enter to linebreak
