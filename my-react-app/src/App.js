@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import Translate from "./Translate";
+import EmojifyTranslate from "./EmojifyTranslate";
 function App() {
   const [tab, setTab] = React.useState(0);
 
@@ -34,12 +34,12 @@ function App() {
         <EmojiAnalysis />
       )}
       {tab === 3 && (
-        <Translate />
+        <EmojifyTranslate />
       )}
       <p
         style={{
           position: "fixed",
-          bottom: "10px",
+          bottom: "0px",
           textAlign: "center",
           width: "100%",
         }}

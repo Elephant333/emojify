@@ -1,4 +1,4 @@
-import styles from "./Translate.module.css";
+import styles from "./EmojifyTranslate.module.css";
 import React, { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
@@ -23,6 +23,7 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import LanguageSwitcher from "./components/LanguageSwitcher";
 
 const GraphemeSplitter = require("grapheme-splitter");
 const splitter = new GraphemeSplitter();
@@ -37,7 +38,7 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-function Translate() {
+function EmojifyTranslate() {
   const [inputText, setInputText] = useState("");
   const [customTone, setCustomTone] = useState("");
   const [outputText, setOutputText] = useState([]);
@@ -48,6 +49,8 @@ function Translate() {
   const [selectedTone, setSelectedTone] = useState("default");
   const [tooLong, setTooLong] = useState(false);
   const [explanations, setExplanations] = useState(["", "", ""]);
+  const [languageFrom, setLanguageFrom] = useState('Text');
+  const [languageTo, setLanguageTo] = useState('Emojis');
   // const [feedbackInputForm, setFeedbackInputForm] = useState("");
   // const [userFeedback, setUserFeedback] = useState("");
 
@@ -224,7 +227,13 @@ function Translate() {
 
   return (
     <div>
-      <img src={logo} alt="Emojify Logo" className={styles.logo} />
+      <img src={logo} alt="Emojify Translate Logo" className={styles.logo} />
+      <LanguageSwitcher
+        languageFrom={languageFrom}
+        setLanguageFrom={setLanguageFrom}
+        languageTo={languageTo}
+        setLanguageTo={setLanguageTo}
+      />
       <div className={styles.input_container}>
         <Stack spacing={2} direction="row" alignItems="flex-start">
           <Tooltip
@@ -517,4 +526,4 @@ function Translate() {
   );
 }
 
-export default Translate;
+export default EmojifyTranslate;
