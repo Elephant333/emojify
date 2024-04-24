@@ -100,7 +100,7 @@ function EmojifyTranslate() {
             content: `Given the following text, convert it to a language of pure emojis correspond to the message's semantic 
             meaning (there must only be emojis and spaces, no alphanumeric 
             characters). Give me a json object of three possible variations 
-            with numbers as the json keys (remember the keys should also be 
+            with numbers as the json keys (remember the keys and values should be 
             double quoted). Don't include any additional markups.
             Here's the message: "${inputText}"`,
           },
@@ -149,7 +149,7 @@ function EmojifyTranslate() {
           {
             role: "user",
             content: `Given the following emojis, convert it to a text message that could be derived from the semantic meaning of the emojis together. Give me a json object of three possible variations 
-            with numbers as the json keys (remember the keys should also be 
+            with numbers as the json keys (remember the keys and values should be 
             double quoted). Don't include any additional markups. Use full sentences.
             Here's the message: "${inputText}"`,
           },
@@ -244,19 +244,30 @@ function EmojifyTranslate() {
     setCustomTone(event.target.value);
   };
 
-  const handleOutputExplanation = async (text, emojis, index) => {
+  const handleOutputExplanation = async (from, to, index) => {
     let updatedExplanations = [...explanations];
     updatedExplanations[index] = "loading";
     setExplanations(updatedExplanations);
+    // Setting up explanations based on direction of translation (text to emojis or emojis to text)
+    let systemMessage = ""; 
+    let userMessage = "";
+    if (languageTo === "Emojis") {
+      systemMessage = `You explain a given translation of text into pure emojis for the user.`;
+      userMessage = `Given the following text and emojis, give a very short (couple sentences) explanation of how the semantic meaning of the emojis together represent the semantic meaning of the text where the text is "${from}" and the emojis are "${to}"`;
+    }
+    else {
+      systemMessage = `You explain a given translation of emojis into text for the user (from emojis to text). You explain how the text is a good translation from the emojis`;
+      userMessage = `Given the following text, give a very short (couple sentences) explanation of how the semantic meaning of the text represents the semantic meaning of the emojis where the emojis are "${from}" and the text is "${to}"`;
+    }
     try {
       const messages = [
         {
           role: "system",
-          content: `You explain a given translation of text into pure emojis for the user.`,
+          content: systemMessage,
         },
         {
           role: "user",
-          content: `Given the following text and emojis, give a very short (couple sentences) explanation of how the semantic meaning of the emojis together represent the semantic meaning of the text where "${text}" and the emojis are "${emojis}"`,
+          content: userMessage,
         },
       ];
       const response = await openai.chat.completions.create({
