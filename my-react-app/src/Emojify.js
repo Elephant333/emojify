@@ -217,15 +217,14 @@ function Emojify() {
   };
 
   const textFieldRef = useRef(null);
-  const handleTextFieldClick = () => {
+  const handleTextFieldClick = (event) => {
+    const cursorPosition = event.target.selectionStart;
     setIsTextFieldClicked(true);
-  };
-
-  useEffect(() => {
-    if (isTextFieldClicked) {
+    setTimeout(() => {
       textFieldRef.current.focus();
-    }
-  }, [isTextFieldClicked]);
+      textFieldRef.current.setSelectionRange(cursorPosition, cursorPosition);
+    }, 0);
+  };
   
   const handleTextFieldBlur = () => {
     setIsTextFieldClicked(false);
