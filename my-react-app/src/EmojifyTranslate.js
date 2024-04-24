@@ -1,5 +1,5 @@
 import styles from "./EmojifyTranslate.module.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
@@ -44,6 +44,7 @@ function EmojifyTranslate() {
   const [languageFrom, setLanguageFrom] = useState('Text');
   const [languageTo, setLanguageTo] = useState('Emojis');
   const [error, setError] = useState(false);
+  const [isTextFieldClicked, setIsTextFieldClicked] = useState(false);
 
   const {
     transcript,
@@ -262,8 +263,23 @@ function EmojifyTranslate() {
   };
 
   const hasEmoji = (str) => {
-    const emojiRegex = /[\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
+    const emojiRegex = /\p{Emoji}/u;
     return str.match(emojiRegex) !== null;
+  };
+
+  const textFieldRef = useRef(null);
+  const handleTextFieldClick = () => {
+    setIsTextFieldClicked(true);
+  };
+
+  useEffect(() => {
+    if (isTextFieldClicked) {
+      textFieldRef.current.focus();
+    }
+  }, [isTextFieldClicked]);
+  
+  const handleTextFieldBlur = () => {
+    setIsTextFieldClicked(false);
   };
 
   return (
@@ -321,10 +337,11 @@ function EmojifyTranslate() {
             }}
           >
             <TextField
+              inputRef={textFieldRef}
               id="outlined-basic"
               label={languageFrom === "Text" ? "Text to translate" : "Emojis to translate"}
               variant="outlined"
-              multiline
+              multiline={isTextFieldClicked}
               inputProps={{ maxLength: 200, style: { maxWidth: "230px" } }}
               sx={{ minWidth: 300 }}
               value={inputText}
@@ -339,10 +356,13 @@ function EmojifyTranslate() {
                   }
                   setError(false);
                   handleEmojifyClick();
+                  handleTextFieldBlur();
                 }
               }}
               error={error}
               helperText={error ? "Must include emojis" : ""}
+              onClick={handleTextFieldClick}
+              onBlur={handleTextFieldBlur}
             />
             {charCount > 0 && (
               <p
@@ -441,7 +461,14 @@ function EmojifyTranslate() {
           <Button
             variant="contained"
             style={{ minWidth: "fit-content", marginTop: "9.75px" }}
-            onClick={handleEmojifyClick}
+            onClick={() => {
+              if (languageFrom === "Emojis" && !hasEmoji(inputText)) {
+                setError(true);
+                return;
+              }
+              setError(false);
+              handleEmojifyClick();
+            }}
           >
             Translate
           </Button>
