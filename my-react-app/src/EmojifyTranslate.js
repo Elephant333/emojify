@@ -43,6 +43,7 @@ function EmojifyTranslate() {
   const [explanations, setExplanations] = useState(["", "", ""]);
   const [languageFrom, setLanguageFrom] = useState('Text');
   const [languageTo, setLanguageTo] = useState('Emojis');
+  const [error, setError] = useState(false);
 
   const {
     transcript,
@@ -260,6 +261,11 @@ function EmojifyTranslate() {
     }
   };
 
+  const hasEmoji = (str) => {
+    const emojiRegex = /[\u{1F300}-\u{1F5FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u;
+    return str.match(emojiRegex) !== null;
+  };
+
   return (
     <div>
       <img src={logo} alt="Emojify Translate Logo" className={styles.logo} />
@@ -316,7 +322,7 @@ function EmojifyTranslate() {
           >
             <TextField
               id="outlined-basic"
-              label="Text to translate"
+              label={languageFrom === "Text" ? "Text to translate" : "Emojis to translate"}
               variant="outlined"
               multiline
               inputProps={{ maxLength: 200, style: { maxWidth: "230px" } }}
@@ -327,9 +333,16 @@ function EmojifyTranslate() {
               onKeyDown={(event) => {
                 if (event.key === "Enter" && !event.shiftKey) {
                   event.preventDefault();
+                  if (languageFrom === "Emojis" && !hasEmoji(inputText)) {
+                    setError(true);
+                    return;
+                  }
+                  setError(false);
                   handleEmojifyClick();
                 }
               }}
+              error={error}
+              helperText={error ? "Must include emojis" : ""}
             />
             {charCount > 0 && (
               <p
