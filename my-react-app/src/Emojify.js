@@ -243,6 +243,7 @@ function Emojify() {
             disableHoverListener
             disableTouchListener
           >
+            {/* mic code */}
             <Box
               sx={{ m: 1, position: "relative" }}
               style={{ marginTop: "4px" }}
@@ -316,6 +317,7 @@ function Emojify() {
               </p>
             )}
           </div>
+          {/* settings code */}
           <div
             style={{
               marginTop: "8px",
@@ -432,6 +434,7 @@ function Emojify() {
           Please allow access to mic for speech-to-text functionality
         </p>
       )}
+      {/* loading code */}
       {loading && (
         <div className={styles.progress_container}>
           <CircularProgress />
@@ -491,6 +494,7 @@ function Emojify() {
                 >
                   {text}
                 </p>
+                {/* clipboard code */}
                 <div style={{ display: "inline-block" }}>
                   <Tooltip title="Copy to Clipboard" placement="right">
                     <IconButton onClick={() => handleCopyToClipboard(text)}>
