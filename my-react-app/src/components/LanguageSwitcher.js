@@ -32,6 +32,7 @@ export default function LanguageSwitcher(props) {
                     id="select-language-from"
                     value={languageFrom}
                     onChange={handleLanguageFromChange}
+                    size="small"
                 >
                     <MenuItem value="Text">Text</MenuItem>
                     <MenuItem value="Emojis">Emojis</MenuItem>
@@ -49,6 +50,7 @@ export default function LanguageSwitcher(props) {
                     id="select-language-to"
                     value={languageTo}
                     onChange={handleLanguageToChange}
+                    size="small"
                 >
                     <MenuItem value="Text">Text</MenuItem>
                     <MenuItem value="Emojis">Emojis</MenuItem>
