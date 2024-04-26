@@ -1,4 +1,4 @@
-import styles from "./EmojifyTranslate.module.css";
+import styles from "./EmojiTranslate.module.css";
 import React, { useState, useEffect, useRef } from "react";
 import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
@@ -30,7 +30,7 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-function EmojifyTranslate() {
+function EmojiTranslate() {
   const [inputText, setInputText] = useState("");
   const [customTone, setCustomTone] = useState("");
   const [outputText, setOutputText] = useState([]);
@@ -61,7 +61,7 @@ function EmojifyTranslate() {
     setInputText(event.target.value);
   };
 
-  const handleEmojifyClick = async () => {
+  const handleEmojiClick = async () => {
     if (inputText === "") {
       return;
     }
@@ -282,7 +282,7 @@ function EmojifyTranslate() {
 
   return (
     <div>
-      <img src={logo} alt="Emojify Translate Logo" className={styles.logo} />
+      <img src={logo} alt="Emoji Translate Logo" className={styles.logo} />
       <div style={{ marginTop: "30px" }}>
         <LanguageSwitcher
           languageFrom={languageFrom}
@@ -365,7 +365,7 @@ function EmojifyTranslate() {
                     return;
                   }
                   setError(false);
-                  handleEmojifyClick();
+                  handleEmojiClick();
                   handleTextFieldBlur();
                 }
               }}
@@ -477,7 +477,7 @@ function EmojifyTranslate() {
                 return;
               }
               setError(false);
-              handleEmojifyClick();
+              handleEmojiClick();
             }}
           >
             Translate
@@ -496,7 +496,7 @@ function EmojifyTranslate() {
       )}
       {outputText[0] === -1 && !loading && (
         <p style={{ fontStyle: "italic", textAlign: "center" }}>
-          Ack! Something went wrong. Try emojifying again!
+          Ack! Something went wrong. Try translating again!
         </p>
       )}
       {outputText.length > 0 && outputText[0] !== -1 && !loading && (
@@ -594,4 +594,4 @@ function EmojifyTranslate() {
   );
 }
 
-export default EmojifyTranslate;
+export default EmojiTranslate;

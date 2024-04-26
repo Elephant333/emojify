@@ -6,7 +6,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import EmojifyTranslate from "./EmojifyTranslate";
+import EmojiTranslate from "./EmojiTranslate";
 function App() {
   const [tab, setTab] = React.useState(0);
 
@@ -37,7 +37,7 @@ function App() {
       {tab === 0 && <Emojify />}
       {tab === 1 && <EmojiSearch />}
       {tab === 2 && <EmojiAnalysis />}
-      {tab === 3 && <EmojifyTranslate />}
+      {tab === 3 && <EmojiTranslate />}
       <p
         style={{
           marginTop: "auto",
