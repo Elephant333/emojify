@@ -61,7 +61,7 @@ function EmojifySearch() {
         },
         {
           role: "user",
-          content: `Given the following emoji description, figure out what emoji it is. Give me a json object of three possible emojis. Let numbers be the json keys, and the two values "emoji" and "name" be the emoji itself and the name of the emoji, respectively. Don't include any additional markups. Here's the message: "${inputText}"`,
+          content: `Given the following emoji description, figure out what emoji it is. Give me a json object of three possible emojis wrapped in quotes. Let numbers be the json keys, and the two values "emoji" and "name" be the emoji itself and the name of the emoji, respectively. Don't include any additional markups. Here's the message: "${inputText}"`,
         },
       ];
       const response = await openai.chat.completions.create({
