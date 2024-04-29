@@ -162,7 +162,7 @@ function EmojiAnalysis() {
               label="Text to analyze"
               variant="outlined"
               multiline
-              inputProps={{ maxLength: 200, style: { maxWidth: "230px" } }}
+              inputProps={{ maxLength: 200 }}
               sx={{ minWidth: 300 }}
               value={inputText}
               onChange={handleInputChange}
